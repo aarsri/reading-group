@@ -56,8 +56,18 @@ Presented by Aarohi Srivastava on November 18, 2022
     * For instance, if we only do BPE-dropout in fine-tuning, there will be a big discrepancy between the pre-training and fine-tuning data.  This is a driving force for the authors' solution. 
 
 ### Multi-View Subword Regularization
-* 
+* Multi-View Subword Regularization is "a method for learning from multiple segmented versions of the same data and enforcing the consistency of predictions over different segmentations.
+* Given the BPE tokenization of a sequence $\hat{x}_i$, and the BPE-dropout tokenization of the same sequence $x'_i$, the objective for multi-view subword regularization is as follows:
+* There are three parts:
+  1. Det.  Seg CrossEnt: cross-entropy loss using the standard deterministic segmentation (maximizing the benefit of the pre-trained representations).
+  2. Prob. Seg CrossEnt: cross-entropy loss using the probabilistic segmentation (allowing the model to learn from different segmentations of the same input).
+  3. Consistency loss: calculates the distance between the model prediction distributions for the two input versions $\hat{x}_i$ and $x'_i$ (enforcing consistent predictions under different segmentations).
+* The consistency loss portion has a big role to play, but there is a risk that it may not work that well if the model predicion becomes overly confident on certain classes.  This is addressed by modifying the consistency loss calculation by using softmax temperature $\tao$ to flatten the prediction distribution.  Higher temperatures make the probabilities more evenly distributed across the classes.
+* Note that this technique is only used during fine-tuning training, not testing/inference.
 
 ### Let's see the receipts...
+* Evaluation is done on the XTREME benchmark for zero-shot cross-lingual transfer from English to other languages.  
+ * XTREME has a lot of tasks including text classification, structured prediction, sentence retrieval, and cross-lingual question answering.
+
 
 ### Conclusion 
