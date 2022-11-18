@@ -71,5 +71,19 @@ Presented by Aarohi Srivastava on November 18, 2022
 * mBERT (BPE) and XLM-Roberta (ULM) are both tested.  The subword regularization (SR) method used depends on the model (BPE-dropout for mBERT, ULM-sample for XLM-Roberta).
 * Hyperparameters (including BPE-dropout probability, ULM-sampling temperature) are mostly set based on performance on English NER. An exception is changing softmax temperature for QA tasks.
 
+<img src="main_results.png" width="800">
+* Notes:
+  * SR is more helpful for mBERT than XLM-Roberta.
+  * MVR is always beneficial, even over SR.
+  * Improvements are not dramatic.
 
-### Conclusion 
+<img src="loss_ablation.png" width="800">
+* Note: Removing any component from loss is about the same and not too bad, except Deterministic Segmentation Cross Entropy, without which there can be a big drop in QA performance.  
+
+Some more results:
+<img src="graphs.png" width="800">
+* Figure 3 and 4: MVR specifically helps more in languages with oversegmentation.
+* Figure 6: MVR helps a lot with cross-lingual transfer from English to non-Latin-script languages.
+* Figure 8 (not here): SR hurts on a lot of mono-lingual English tasks, while MVR helps across all mono-lingual English tasks.
+* Figure 5: MVR helps the model improve on examples in which it is not confident.
+* Figure 7: Consistency loss in MVR trains the model to be closer to the ensemble of two inputs.
