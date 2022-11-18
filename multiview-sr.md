@@ -67,7 +67,10 @@ Presented by Aarohi Srivastava on November 18, 2022
 
 ### Let's see the receipts...
 * Evaluation is done on the XTREME benchmark for zero-shot cross-lingual transfer from English to other languages.  
- * XTREME has a lot of tasks including text classification, structured prediction, sentence retrieval, and cross-lingual question answering.
+  * XTREME has a lot of tasks including text classification, structured prediction, sentence retrieval, and cross-lingual question answering.
+* mBERT (BPE) and XLM-Roberta (ULM) are both tested.  The subword regularization (SR) method used depends on the model (BPE-dropout for mBERT, ULM-sample for XLM-Roberta).
+* Hyperparameters (including BPE-dropout probability, ULM-sampling temperature) are mostly set based on performance on English NER. An exception is changing softmax temperature for QA tasks.
+
 
 
 ### Conclusion 
