@@ -72,5 +72,4 @@ Presented by Aarohi Srivastava on November 18, 2022
 * Hyperparameters (including BPE-dropout probability, ULM-sampling temperature) are mostly set based on performance on English NER. An exception is changing softmax temperature for QA tasks.
 
 
-
 ### Conclusion 
