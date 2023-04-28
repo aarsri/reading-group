@@ -34,8 +34,8 @@ Presented by Aarohi Srivastava on April 28, 2023
 
 #### T5
 * prompt: 
-  * Adjacent: My preferred words are **PRIME**, <BLANK-SPAN-1>, and tree.
-  * Non-adjacent: My preferred words are **PRIME**, flower, interesting, jump, ponderous, sky, skipping, desk, small, ladder, lovely, <BLANK-SPAN-1>, and tree.
+  * Adjacent: My preferred words are **PRIME**, \<BLANK-SPAN-1\>, and tree.
+  * Non-adjacent: My preferred words are **PRIME**, flower, interesting, jump, ponderous, sky, skipping, desk, small, ladder, lovely, \<BLANK-SPAN-1\>, and tree.
 * test sentences:
   * My preferred words are realize, {center, centre}, and tree.
     * Probability of choosing *center* should be higher than *centre*.
