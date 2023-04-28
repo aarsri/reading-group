@@ -24,7 +24,7 @@ Presented by Aarohi Srivastava on April 28, 2023
   * US-matched - both are US variants
   * UK-matched - both are British variants
   * mismatched - one of each
-<img src="table1.png" width="800">
+<img src="table1.png" width="300">
 
 ### Experiments
 * Create templates of the following form to minimize confounds and try to ensure syntactic and semantic acceptability. Templates include one work marked as US or UK, and include a blank span that the model should only fill with spellings belonging to the same variety.
@@ -44,18 +44,18 @@ Presented by Aarohi Srivastava on April 28, 2023
   * They created a US version and a UK version of the British National Corpus (BNC), based on the spellings of words in ABET. They fine-tune T5 (with the pre-training objective) on this data (US + UK versions).
   * This provides a balanced dataset with guaranteed consistency (per their definition of consistency) for fine-tuning.
 
-<img src="table2.png" width="800">
-<img src="table3.png" width="800">
+<img src="table2.png" width="450">
+<img src="table3.png" width="300">
 
 * nonce forms: to determine if T5 assigns probabilities based on dependencies between specific (common) lexical terms or if it is learning generalizations and learning about the relationships between subwords.
-<img src="table5_6.png" width="800">
+<img src="table5_6.png" width="300">
 
 #### GPT-2
 * They perform similar experiments as for T5. They include two methods of calculating conditional probability:
   * P("harbour" | "My preferred words are flavour,")
   * P("harbour, and tree" | "My preferred words are flavour,")
-<img src="table7.png" width="800">
-<img src="table8.png" width="800">
+<img src="table7.png" width="450">
+<img src="table8.png" width="300">
  
 ### Questions
 * Looking at the T5 vocabulary, in some cases (realize/realise), both variants appear in the vocabulary, while in others (vapor/vapour), only the US version appears. With the nonce words, I would think few if any of the words appear as a whole in the vocabulary.  BPE is not optimized to segment morphologically (or/our, ize/ise, etc. may not emerge after tokenizing test data). They do not seem to consider this in the paper. 
