@@ -25,6 +25,26 @@ Presented by Aarohi Srivastava on April 28, 2023
   * US-matched - both are US variants
   * UK-matched - both are British variants
   * mismatched - one of each
+<!-- <img src="table1.png" width="800"> -->
 
+### Experiments
+* Create templates of the following form to minimize confounds and try to ensure syntactic and semantic acceptability. Templates include one work marked as US or UK, and include a blank span that the model should only fill with spellings belonging to the same variety.
+* Two settings for placement of blank: adjacent or non-adjacent.
+* Template: My preferred words are ..., ..., and tree.
+
+#### T5
+* prompt: 
+  * Adjacent: My preferred words are **PRIME**, <BLANK-SPAN-1>, and tree.
+  * Non-adjacent: My preferred words are **PRIME**, flower, interesting, jump, ponderous, sky, skipping, desk, small, ladder, lovely, <BLANK-SPAN-1>, and tree.
+* test sentences:
+  * My preferred words are realize, {center, centre}, and tree.
+    * Probability of choosing *center* should be higher than *centre*.
+  * My preferred words are realise, {center, centre}, and tree.
+    * Probability of choosing *centre* should be higher than *center*.
+* fine-tuning:
+
+#### GPT-2
+<!-- <img src="table2.png" width="800"> -->
+ 
 ### Questions
 * 
