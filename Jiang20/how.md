@@ -55,15 +55,15 @@ T-REx subset of the LAMA benchmark that consists of 41 Wikidata relations and at
   * Oracle: when *any* of the top 40 generated prompts give the correct answer
 
 ## Results
-<img src="table2.png" width="300">
-<img src="table4.png" width="300">
+<img src="table2.png" width="600">
+<img src="table4.png" width="600">
 
 * "It can be seen that the largest gains from using mined prompts seem to occur in cases where the manually defined prompt is more complicated syntactically, or when it uses less common wording than the mined prompt."
 
 * Interesting: average edit distance is 3.27 for mined vs. original, and 2.73 for paraphrased vs. original.
 
-<img src="table6.png" width="300">
-<img src="table8.png" width="300">
+<img src="table6.png" width="600">
+<img src="table8.png" width="600">
 
 * Benefits of the method are maximized when using ERNIE instead of BERT.
 
