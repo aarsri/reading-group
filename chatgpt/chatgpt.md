@@ -58,12 +58,23 @@ print(completion.choices[0].message)
 ```
 The possible roles are system, user, and assistant. The `messages` list consists of turns of the conversation. The first element is typically to specify the behavior of the system, though this is not required. The generic message if omitted would be something like "You are a helpful assistant."
 
+Along with `model` and `messages`, there are optional parameters that can be included, such as:
+* temperature
+* max tokens
+* top_p
+* stop conditions
+* frequency penalty
+* presence penalty for certain topics
+* prompt (pre-completion text)
+* suffix (post-completion text)
 
-and then the roles "user" and "assistant" would alternate.
+Another common use case is [function calls](https://platform.openai.com/docs/guides/function-calling).
 
-There is also a [fine-tuning UI](https://platform.openai.com/docs/guides/fine-tuning) that simply involves uploading the training and testing data and specifying hyperparameters (or using defaults). They suggest that the training size should be 50-100 well-crafted examples. The estimated cost to train on 100,000 tokens of text for 3 epochs is $2.40.
+Finally, there is also a [fine-tuning UI](https://platform.openai.com/docs/guides/fine-tuning) that simply involves uploading the training and testing data and specifying hyperparameters (or using defaults). They suggest that the training size should be 50-100 well-crafted examples. The estimated cost to train on 100,000 tokens of text for 3 epochs is $2.40.
 
 The OpenAI [cookbook](https://cookbook.openai.com) has lots of examples of accomplishing specific tasks.
+
+OpenAI stores all API usage data for 30 days.
 
 ### Directions of NLP Research
 
