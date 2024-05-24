@@ -91,14 +91,14 @@ Finally, there is also a [fine-tuning UI](https://platform.openai.com/docs/guide
 Understanding what ChatGPT can do
 * [ChatGPT: Jack of all trades, master of none](https://www.sciencedirect.com/science/article/pii/S156625352300177X) (Kocoń et al., 2023)
 * [Can ChatGPT Understand Too? A Comparative Study on ChatGPT and Fine-tuned BERT](https://arxiv.org/abs/2302.10198) (Zhong et al., 2023) - great at everything except paraphrase and similarity tasks
-* 
 
 Using ChatGPT to accomplish a task
 * [Zero-Shot Information Extraction via Chatting with ChatGPT](https://arxiv.org/abs/2302.10205) (Wei et al., 2023)
 
 Addressing problems brought about by the new technology
-* detecting AI-generated text
+* detection of AI-generated text
 * evaluation of generated text
+* fairness, trustworthiness, equitability
 
 ### Directions of Non-NLP Research
 * education
@@ -106,11 +106,19 @@ Addressing problems brought about by the new technology
   * [Reflection on whether Chat GPT should be banned by academia from the perspective of education and teaching](https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1181712/full)
   * [Can Chat GPT replace the role of the teacher in the classroom: A fundamental analysis](https://www.jonedu.org/index.php/joe/article/download/2745/2332)
 * medicine - particularly medical question answering
+* more...
 
 ### Media
 <img src="news.png" width="400">
-Overview: ChatGPT is being used in all sorts of ways by all sorts of people, so it's gonna make the news. Overall, news articles are informative (i.e., educating people on how to use ChatGPT), relate to scandals (e.g., scientists publishing AI-generated papers that are not accurate), or highlight the capitalist focus of ChatGPT and related tools (e.g., how to make money using ChatGPT, companies selling their data to OpenAI, and companies like Meta and TikTok facilitating AI-generated content and ads).  The highly negative perception of generative AI typically focuses on image generation and deepfakes more than text generation. 
+Overview: ChatGPT is being used in all sorts of ways by all sorts of people, so it's going to make the news. Overall, news articles are informative (i.e., educating people on how to use ChatGPT), relate to scandals (e.g., scientists publishing AI-generated papers that are not accurate), or highlight the capitalist focus of ChatGPT and related tools (e.g., how to make money using ChatGPT, companies selling their data to OpenAI, and companies like Meta and TikTok facilitating AI-generated content and ads).  The highly negative perception of generative AI typically focuses on image generation and deepfakes more than text generation. 
 
 ### Usage and Thoughts from the Public
-<img src="papers.png" width="400">
+<img src="papers1.png" width="300"><img src="papers2.png" width="300">
 
+Below are examples of some of the most common ways people are using ChatGPT. These are the impressions left after some web and social media surfing.
+* extra income
+  * GPT agent that answers questions on a specific domain
+  * generate blog posts with ads and affiliate marketing
+* programming
+* information search and recommendations
+* writing formal content (e.g., email, cover letter)
