@@ -28,12 +28,13 @@ Goal: To analyze the role of subword segmentation in MT with respect to:
 | Setswana (ts) | Bantu/Sotho-Tswana | agglutinative | disjunctive |
 | Afrikaans (af) | Germanic | analytic | disjunctive |
 
-* agglutinative (vs. analytic) morphology - morphemes serve clearer, smaller roles on their own and join together, leading to a higher number of morphemes per word (longer words)
-* conjunctive vs. disjunctive orthography - the various elements of a word (such as a verb and its person) are written as separate words in disjunctive orthography, but as together in one word in conjunctive orthography
+* Agglutinative (vs. analytic) morphology - morphemes serve clearer, smaller roles on their own and join together, leading to a higher number of morphemes per word (longer words).
+* Conjunctive vs. disjunctive orthography - the various elements of a word (such as a verb and its person) are written as separate words in disjunctive orthography, but as together in one word in conjunctive orthography.
+  *  In particular, even if languages are less closely related, if they are both disjunctive, it might make MT easier as there is stronger one-to-one alignment (see Setswana and Afrikaans).
 
 #### Subword tokenization methods
 * BPE - deterministic
-* Unigram (ULM) - non-deterministic
+* Unigram (ULM) w/ subword regularization - non-deterministic, model can see different tokenizations of the same sequence
 * Subword segmental MT (SSMT) - segmentation learned jointly with MT training (optimized to MT performance)
 * Overlap BPE (OBPE) - boost subword overlap across languages
 * Extended BPE (XBPE) - new subwords (pertaining to the target language) are added to the vocabulary
@@ -44,7 +45,11 @@ Goal: To analyze the role of subword segmentation in MT with respect to:
 * Trilingual: English --> Siswati and isiXhosa/Setswana/Afrikaans
 * Cross-lingual fine-tuning - fine-tune these on English to one of the unseen target languages (e.g., FT en-->xh on en-->ts)
 
-For each case, if ChrF++ of the trilingual model is higher than that of the bilingual model, there is synergy. If it is lower, there is interference.
+If ChrF++ of the trilingual model is higher than that of the bilingual model, there is synergy. If it is lower, there is interference.
+
+#### "Which subwords promote synergy and minimise interference?"
+#### "Which subwords transfer cross-lingually?"
+#### "What is the role of linguistic typology?"
 
 
 
