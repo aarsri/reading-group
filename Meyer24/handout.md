@@ -53,14 +53,14 @@ Metric:
 <img src="tab3.png" width="400">
 ULM (with subword regularization) comes out on top! The paper attributes this success to the robustness gained by seeing different tokenizations of the same sequences.
 
-<img src="fig2.png" width="500">
-* Nothing is particularly strong at promoting synergy. 
+* Nothing is particularly strong at promoting synergy.
 * SSMT and OBPE lead to much more interference, likely because they are specially tuned to the training setting/language pair.
+<img src="fig2.png" width="500">
 
 #### Which tokenization method is best for cross-lingual transfer? BPE.
-<img src="fig3.png" width="400">
-* BPE is best overall. SSMT and XBPE are close in performance, and for a few instances are even better (e.g., SSMT for Afrikaans to Siswati transfer). 
+* BPE is best overall. SSMT and XBPE are close in performance, and for a few instances are even better (e.g., SSMT for Afrikaans to Siswati transfer).
 * While ULM has the best performance on the diagonals (same language), it is not good for transfering to isiXhosa, Afrikaans, or Setswana. It is still good for transfer to Siswati (the low resource setting).
+<img src="fig3.png" width="400">
 
 #### "What is the role of linguistic typology?"
 * IsiXhosa has the strongest synergy with Siswati (closest language pair), while Setswana is the weakest (even though Setswana is closer to Siswati than Afrikaans).
