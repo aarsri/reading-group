@@ -27,6 +27,7 @@ To probe the underlying generalization mechanisms in GPT-J, the authors employ t
 Train cognitive models on adjective-derivative pairs found in Pile (GPT-J's training corpus), and then see what nominalization they produce for unseen *nonce* (made up) adjectives.
 * Example: train on pairs like available --> availability, selfish --> selfishness. At test time, the model would be asked to predict the corresponding noun for nonce adjectives with the same suffixes, like tegornable and friquish.
 * The adjectives used include four possible suffixes: -able and -ish have *high* regularity for nominalization, and -ive and -ous have *low* regularity.
+* The cognitive models are trained in two ways: word *type* perspective and word *token* perspective. The token version will be much more sensitive to word frequency in the training data.
 
 **LLM Predictions**
 To obtain LLM predictions, GPT-J was prompted with a text snippet containing the nonce adjective and asked to complete the nominalization.
@@ -38,15 +39,20 @@ To obtain LLM predictions, GPT-J was prompted with a text snippet containing the
 (turgeishity and prienishity).
 
 **Low Regularity Adjectives (-ive and -ous)**
-* MGL (rule-based model) and GCM (analogy-based model) give variable predictions for these classes. They agree on predictions for only 54% of the adjective types.  
-* *Token-based GCM* (which considers word frequency) matches GPT-J’s predictions better than the rule-based MGL or type-based GCM.  
+* MGL (rule-based) and GCM (analogy) give variable predictions for these classes. They agree on predictions for only 54% of the adjective types.  
+* *Token-based GCM* (which considers word frequency) matches GPT-J’s predictions better than the rule-based MGL or type-based GCM.
 * Example: Nonce Word "pepulative":
   * MGL (rule-based) predicts "-ity" (pepulativity) because it applies a general rule for adjectives ending in -ive.
-  - GCM (analogy-based) is influenced by seen examples. There are more "-ity" derivatives overall for similar adjectives (e.g., “-lative”), but high-frequency neighbors like manipulativeness (1,544 occurrences) bias GCM toward "-ness."
-  - **GPT-J** predicts "-ness" (e.g., *pepulativeness*), aligning with the **token-based GCM**.  
+  - GCM (analogy) is influenced by seen examples. There are more "-ity" derivatives overall for similar adjectives (e.g., “-lative”), but high-frequency neighbors like manipulativeness (1,544 occurrences) bias GCM toward "-ness."
+  - GPT-J predicts "-ness" (e.g., *pepulativeness*), aligning with the token-based GCM.  
 * Conclusion: GPT-J’s behavior supports analogy-based reasoning, particularly influenced by token frequency, over strict rule application.
+ * While analogical generalization seems to be used for cases with high variability, LLMs may also use rules for highly regular patterns, aligning with dual-mechanism theories in morphology. To be explored in the following sections...
+
+[Include Figure 1]
 
 ## Predictions for Seen Words
+
+
 
 ## Frequency Effects and Analogical Pressure
 
