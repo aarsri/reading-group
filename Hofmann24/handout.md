@@ -1,8 +1,12 @@
-# Derivational Morphology Reveals Analogical Generalization in Large Language Models
+## Derivational Morphology Reveals Analogical Generalization in Large Language Models
 
-What mechanisms underlie linguistic generalization in large language models (LLMs)? Are these mechanisms rule-based or analogical?
+Valentin Hofmann, Leonie Weissweiler, David Mortensen, Hinrich Schütze, Janet Pierrehumbert
 
-## Background
+Presented by Aarohi Srivastava on January 17, 2025
+
+Big Idea: What mechanisms underlie linguistic generalization in large language models (LLMs)? Are these mechanisms rule-based or analogical?
+
+### Background
 
 **Rule-Based Generalization**: Past work has approached this question from a rule-based perspective, meaning for some linguistic concept (e.g., subject-verb agreement), they believe the LLM has inferred a set of symbolic rules from the training data.
 * Example: If a word ends in -ish, add -ness to nominalize (selfish --> selfishness) 
@@ -14,14 +18,14 @@ What mechanisms underlie linguistic generalization in large language models (LLM
 
 **Adjective Nominalization**: To distinguish between rule-based and analogical generalization in LLMs, the authors analyze how GPT-J learns English adjective nominalization wiith -ity and -ness, focusing on adjectives that already contain a derivational suffix (available --> availability, selfish --> selfishness). This is a narrow class that still exhibits plenty of variability to be able to observe analogical learning.
 
-## Cognitive Models
+### Cognitive Models
 
 To probe the underlying generalization mechanisms in GPT-J, the authors employ two cognitive models, one rule-based and one analogical, and see which one best aligns with GPT-J's outputs. 
 * The rule-based model (Minimal Generalization Learner, **MGL**) is fit by identifying consistent patterns in the data (e.g., which suffix is most often used with specific adjective classes).
 * The analogical model (Generalized Context Model, **GCM**) is fit by analyzing how similar examples in the training data are distributed.
 * The goal is to compare GPT-J's predictions with the rule-based and analogical cognitive models to determine which model better explains the LLM’s behavior for different linguistic phenomena (regular vs. irregular patterns, word frequencies, etc.).
 
-## Generalization to Nonce Words
+### Generalization to Nonce Words
 
 **Cognitive Models**
 Train cognitive models on adjective-derivative pairs found in Pile (GPT-J's training corpus), and then see what nominalization they produce for unseen *nonce* (made up) adjectives.
@@ -46,14 +50,26 @@ To obtain LLM predictions, GPT-J was prompted with a text snippet containing the
   - GCM (analogy) is influenced by seen examples. There are more "-ity" derivatives overall for similar adjectives (e.g., “-lative”), but high-frequency neighbors like manipulativeness (1,544 occurrences) bias GCM toward "-ness."
   - GPT-J predicts "-ness" (e.g., *pepulativeness*), aligning with the token-based GCM.  
 * Conclusion: GPT-J’s behavior supports analogy-based reasoning, particularly influenced by token frequency, over strict rule application.
- * While analogical generalization seems to be used for cases with high variability, LLMs may also use rules for highly regular patterns, aligning with dual-mechanism theories in morphology. To be explored in the following sections...
+ * While analogical generalization seems to be used for cases with high variability, LLMs may also use rules for highly regular patterns, aligning with dual-mechanism theories in morphology.
 
 [Include Figure 1]
 
-## Predictions for Seen Words
+### Predictions for Seen Words
+* Four groups of adjectives (see Table 3). R- denotes high regularity, while V- denotes high variability.
+* GPT-J’s nominalization predictions for -ity vs. -ness were tested using 48,995 adjectives seen by the model (in Pile).
+* Probability assignments for each suffix were compared against training data statistics.
+Results were obtained averaging over the same 12 prompts.
+* GPT-J’s predictions closely matched the suffix distribution in its training data. It consistently preferred the suffix with higher frequency in the training data, even for variable cases.
+* This suggests reliance on analogically reasoning rather than strict rules, though highly regular patterns may still involve some rule-based reasoning.
+
+[Include Table 3]
+
+### Frequency Effects and Analogical Pressure
+* Goal: Analyze the model's preference for attested (seen in training data) vs. unattested (not seen) nominalized forms using log probabilities as a measure of confidence. Larger differences indicate higher confidence in the chosen form.
+* Adjectives were grouped into low frequency (up to 10) and high frequency (100 and up) as measured in Pile. These groups allowed testing the impact of word frequency on GPT-J’s confidence.
+* Question: "We have already seen that the most regular outcomes can be generated by analogy, but
+could they instead be generated by rule?"
 
 
-
-## Frequency Effects and Analogical Pressure
 
 ## Human Use of Word Types Versus Tokens
