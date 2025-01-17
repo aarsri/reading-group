@@ -52,8 +52,6 @@ To obtain LLM predictions, GPT-J was prompted with a text snippet containing the
 * Conclusion: GPT-J’s behavior supports analogy-based reasoning, particularly influenced by token frequency, over strict rule application.
  * While analogical generalization seems to be used for cases with high variability, LLMs may also use rules for highly regular patterns, aligning with dual-mechanism theories in morphology.
 
-[Include Figure 1]
-
 ### Predictions for Seen Words
 * Four groups of adjectives (see Table 3). R- denotes high regularity, while V- denotes high variability.
 * GPT-J’s nominalization predictions for -ity vs. -ness were tested using 48,995 adjectives seen by the model (in Pile).
@@ -62,7 +60,7 @@ Results were obtained averaging over the same 12 prompts.
 * GPT-J’s predictions closely matched the suffix distribution in its training data. It consistently preferred the suffix with higher frequency in the training data, even for variable cases.
 * This suggests reliance on analogically reasoning rather than strict rules, though highly regular patterns may still involve some rule-based reasoning.
 
-[Include Table 3]
+<img src="table3.png" width="300">
 
 ### Frequency Effects and Analogical Pressure
 
