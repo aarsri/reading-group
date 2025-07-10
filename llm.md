@@ -70,6 +70,8 @@ Tokenizer vocabulary and segmentation behavior can affect downstream performance
 
 **Total Parameter Count** is a function of width and depth, and also involves calculations for multi-head self-attention modules and the feedforward network parameters.
 
+---
+
 ## Modern Evaluation Strategies
 
 - Instruction Following
@@ -88,9 +90,7 @@ Tokenizer vocabulary and segmentation behavior can affect downstream performance
 ### Prompting
 
 - **Zero-shot**:
-  ```
-  Translate: Bonjour
-  ```
+  ```Translate: Bonjour```
 - **Few-shot**:
   ```
   Translate the following:
@@ -105,6 +105,8 @@ Tokenizer vocabulary and segmentation behavior can affect downstream performance
   ```
   
 BERT-based models are evaluated with metrics like F1, accuracy on classification tasks, or EM/F1 on span-based QA, while LLMs are evaluated based on generation quality, reasoning consistency, and task transferability.
+
+---
 
 ## Parameter-Efficient Fine-Tuning
 
@@ -160,6 +162,8 @@ peft_config = LoraConfig(
 
 model = get_peft_model(model, peft_config)
 ```
+
+---
 
 ## Discussion Questions
 * If you had the infrastructure to use a huge LLM for your research, what would want to do with it?
