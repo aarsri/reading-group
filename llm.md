@@ -48,11 +48,11 @@ As we know, decoder-only models do capture linguistic structure, but the way the
 | ------- | ---- | ------------ | -------------- | --------------- | ----------------- | ---------- | ------------------------ | --------------------- | ------------ |
 | GPT-2   | 2019 | YES            | 117M           | 1.5B            | BPE     | \~50K      | WebText (8M docs)        | CLM                   | English      |
 | GPT-3.5 | 2022 | NO            | 6.7B (Davinci) | 175B            | GPT BPE           | \~50K      | ?            | CLM                   | English      |
-| GPT-4   | 2023 | NO            | -              | >500B           | Custom (Tiktoken) | \~100K     | ?            | Mixture of Objectives | Multilingual |
+| GPT-4   | 2023 | NO            | -              | >500B           | Custom (Tiktoken) | \~100K     | ?            | Mixed | Multilingual |
 | LLaMA 2 | 2023 | YES            | 7B             | 65B             | SentencePiece BPE | 32K        | Common Crawl + books     | CLM                   | Multilingual |
 | LLaMA 3 | 2024 | YES            | 8B             | 70B             | Custom BPE        | 128K       | Expanded corpus          | CLM                   | Multilingual |
 | Mistral | 2023 | YES            | 7B             | 12.9B (Mixtral) | BPE               | 32K        | Web-scale corpus         | CLM                   | Multilingual |
-| mT5     | 2020 | YES            | 60M            | 13B             | SentencePiece     | 250K       | C4 | MLM (T5-style)        | Multilingual         |
+| mT5     | 2020 | YES            | 60M            | 13B             | SentencePiece     | 250K       | C4 | MLM        | Multilingual         |
 
 Tokenizer vocabulary and segmentation behavior can affect downstream performance, especially in low-resource or instruction-heavy setups. Some models (e.g., Llama 3) have customized tokenizers that make processing more efficient for common phrases and instruction setups, but could pose issues in nonstandard settings.
 
@@ -87,7 +87,10 @@ Tokenizer vocabulary and segmentation behavior can affect downstream performance
 
 ### Prompting
 
-- **Zero-shot**: "Translate: Bonjour"
+- **Zero-shot**:
+  ```
+  Translate: Bonjour
+  ```
 - **Few-shot**:
   ```
   Translate the following:
