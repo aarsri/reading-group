@@ -1,6 +1,7 @@
 # Getting to Know Modern Language Models
+Aarohi Srivastava | July 11, 2025
 
-## From BERT to GPT: Encoder-only vs. Decoder-only Language Models
+## From BERT to GPT: Encoder-Only vs. Decoder-Only Language Models
 
 The rise of decoder-only models like GPT and LLAMA is tightly coupled with a paradigm shift in NLP tasks. Traditional NLP emphasized understanding (e.g., sentiment analysis, entity recognition, classification), while modern applications emphasize interaction and generation (e.g., chatbots, summarization, reasoning, coding, instruction-following). 
 
@@ -55,7 +56,7 @@ As we know, decoder-only models do capture linguistic structure, but the way the
 
 Tokenizer vocabulary and segmentation behavior can affect downstream performance, especially in low-resource or instruction-heavy setups. Some models (e.g., Llama 3) have customized tokenizers that make processing more efficient for common phrases and instruction setups, but could pose issues in nonstandard settings.
 
-### What Does "Large" Mean?
+### What does "large" mean?
 
 **Width** defines size of internal vector representations:
 - LLaMA 2 7B: hidden dim = 4096
