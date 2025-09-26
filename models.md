@@ -14,7 +14,7 @@
 Goal: Robustness in representations.
 
 ### Overview
-* Input: token sequence → predict masked tokens from context → Output: embeddings
+* Input: token sequence → predict masked tokens from context → Output: continuous embeddings
 * Encoder-only models are trained with the masked language modeling objective, encouraging the model to build context-sensitive embeddings so that different surface token sequences that point to the same semantics map to nearby representations.
 
 ### Underlying Vulnerabilities wrt Dialects
@@ -28,6 +28,9 @@ Goal: Robustness in representations.
 ### Strengthening the Model
 * Intentionally manipulating token sequences during training, particularly via character-level corruption and subword regularization, encourages the model to build invariant representations across surface variation.
 * **Learning goal**: multiple tokenizations (even unusual ones) can yield the same contextual meaning → stronger invariance in the embedding space.
+
+### Takeaway
+Dialect robustness here is mostly about escaping the tokenization bottleneck and learning useful embeddings. The challenge is that tokenization schemes are usually baked in, making this a structural limitation.
 
 ## Decoder-Only Text Models (e.g,. GPT, LLaMA)
 Goal: Robustness in generative mappings.
@@ -49,6 +52,9 @@ Goal: Robustness in generative mappings.
 * However, success may require being more intentional with how this is carried out:
   * *Speculation*: Because a decoder-only model does not have an encoder, it does not necessarily have as much incentive to build robust representations. We need to find a way to leverage the autoregressive paradigm and the next-word prediction objective.
 
+### Takeaway
+Manipulating token sequences can teach robustness both at input (dialect forms → same intent) and output (many continuations → same meaning). The difficulty is that the autoregressive setup doesn’t naturally reward invariant embeddings, so robustness has to emerge indirectly, making it harder to control.
+
 ## Speech Encoders (e.g., wav2vec2, HuBERT)
 Goal: Robustness in latent acoustic/phonetic space.
 
@@ -67,6 +73,9 @@ Goal: Robustness in latent acoustic/phonetic space.
 * Augmentation during pretraining (pitch shifting, time stretching, simulated accents) can encourage the model to form embeddings that are invariant to surface-level differences while preserving phonetic identity.
 * Ideas: Mask spans in audio signal, regularization/dropout in the latent space, channel noise, speed/pitch.
 * **Learning goal**: diverse acoustic input can still yield the same latent category → stronger invariance in phonetic/phonological space.
+
+### Takeaway
+Speech Encoders are well-positioned for dialect robustness. The challenge is that overfitting to narrow acoustic distributions is subtle. Encoders may look generalized but still miss dialect variation.
 
 ## Automatic Speech Recognition (ASR) Models (e.g., wav2vec2 + CTC, Whisper)
 Goal: Robustness in acoustic-to-orthographic mapping.
@@ -90,8 +99,11 @@ Goal: Robustness in acoustic-to-orthographic mapping.
 
 ### Strengthening the Model
 * Ideas: audio-native manipulation (e.g., speech/pitch perturbation, additive noise), phoneme substitutions using TTS model.
-* **Learning goal**: many sounds correspond to the same transcription token → robustness to speech variation
-* Alternate learning goal: same utterance can be composed of different sounds and can be expressed differently orthographically (hard)
+* **Learning goal**: many sounds correspond to the same transcription token → robustness to speech variation.
+* Alternate learning goal: same utterance can be composed of different sounds and can be expressed differently orthographically (hard).
+
+### Takeaway
+ASR brittleness comes from committing to orthography. Augmentation can broaden tolerance, but without dialect-aware labels, robustness risks looking like noisier transcriptions rather than genuinely dialect-sensitive.
 
 ## Speech Language Models (e.g., AudioLM, Vall-E)
 Goal: Robustness in generative unit distributions.
@@ -102,7 +114,7 @@ Goal: Robustness in generative unit distributions.
 * In principle, this allows them to capture dialect-specific patterns of pronunciation and prosody.
 
 ### Underlying Vulnerabilities wrt Dialects
-* In practice, the quantizer is usually trained on standardized input, which bakes in a bias toward canonical realizations.
+* In practice, the quantizer is usually trained on standardized input, which bakes in a bias toward canonical realizations. This is similar to the tokenization bottleneck.
 * **Key Vulnerability**: Dialectal pronunciations may be quantized into units that are rare or out-of-distribution relative to the training corpus. Once unusual units are introduced, the model can struggle to continue fluently.
 * For Speech LMs, I view robustness as *being able to generate next units fluently despite acoustically diverse input*.
 
@@ -113,6 +125,12 @@ Goal: Robustness in generative unit distributions.
 ### Speech LMs vs. ASR
 * Compared to ASR, speech LMs bypass orthography entirely, which is an opportunity: they could in principle represent dialectal variants as equally valid continuations, rather than forcing them into standard spelling.
 * Whether this works depends on the design of the unit space. This is a structural difference that makes quantization a crucial site of dialect robustness or fragility.
+
+### Takeaways
+* Quantization is a lot like the tokenization bottleneck. If dialectal realizations get poor unit codes, robustness collapses no matter how good the LM is. 
+* Note that quanitzation is used in other speech models beyond Speech LMs, but the distinction is that quantization is an in-built part of typical Speech LMs, while it is just an auxiliary prediction target in speech encoders.
+ * Specifically, HuBERT and wav2vec2 discretize intermediate representations, but the discrete units are not the output.
+ * At inference for speech encoders, the encoder typically produces continuous embeddings (like BERT) rather than discrete codes.
 
 ## Speech Language Understanding (SLU) Models
 Goal: Robustness in acoustic-to-semantic mapping.
@@ -131,7 +149,7 @@ Goal: Robustness in acoustic-to-semantic mapping.
 
 ## Insights and Takeaways
 
-### Structural bottlenecks differ across model type.
+### Structural Bttlenecks Differ Across Model Types
 * In encoder-only text models, the key vulnerability is the tokenization bottleneck. Dialectal spellings are fragmented or rare, destabilizing embeddings.
 * In decoder-only text models, the vulnerability compounds: different tokens disrupt not just representations but the generative trajectory, amplifying mistakes forward.
 * In speech encoders, the bottleneck is representation space bias. If the latent space reflects only a narrow set of acoustic realizations, dialect pronunciations fall into unstable or mismatched regions.
@@ -139,14 +157,14 @@ Goal: Robustness in acoustic-to-semantic mapping.
 * In speech LMs, the weak link is quantization. Dialectal variants often land in rare or untrained unit codes, derailing autoregressive generation.
 * In SLU models, the challenge is the semantic collapse. Dialectal pronunciation and lexical differences can both misalign embeddings with meaning categories.
 
-### The role of pretraining objectives in invariance learning.
+### Role of Pretraining Objectives
 * Assumptions that dialects break: ASR assumes standard mappings; encoders assume training coverage; LMs assume unit distributions.
 * Masked prediction (encoder-only text, speech encoders) encourages representation invariance: mapping diverse surface forms into stable embeddings.
 * Autoregressive prediction (decoder-only text, speech LMs) encourages continuation fluency, but also makes models more fragile because they are end-to-end.
 * ASR enforces canonicalization, which increases brittleness: dialectal input is forced into standardized orthography.
 * SLU enforces meaning invariance, but risks overlooking systematic dialectal richness if only exposed to standard forms.
 
-### Noise as a unifying tool, but with different effects.
+### Noise as a Unifying Tool but with Different Effects
 * For encoders (text or speech), noise enforces embedding invariance, teaching the model that multiple realizations should collapse into the same representation.
 * For autoregressive models, noise encourages trajectory recovery, training the system to continue fluently despite irregular or unexpected tokens or units.
 * For ASR, noise can broaden speaker and accent tolerance, but without dialect-aware supervision, it risks blurring meaningful variation into generic robustness.
