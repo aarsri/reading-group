@@ -2,7 +2,8 @@
 
 ## Introduction
 
-* One challenge in language modeling is how to **achieve robustness across dialects**. Pre-training on more linguistically diverse data helps, but models still fail to generalize to unseen language varieties. 
+* One challenge in language modeling is how to **achieve robustness across dialects**. Pre-training on more linguistically diverse data helps, but models still fail to generalize to unseen language varieties.
+* Because language is constantly evolving, increasing linguistic diversity in pretraining data is valuable but is not always enough.
 * A unifying idea in exploring this is **invariance learning**. A model that succeeds in dialectal robustness learns to represent meaning in a way that is **stable under surface variation**.
 * I examined six families of language models, thinking about:
   * Where are the vulnerabilities to dialectal variation?
@@ -12,38 +13,39 @@
 ## Encoder-Only Text Models (e.g., BERT, RoBERTa)
 Goal: Robustness in representations.
 
-* Input: token sequence --> Output: predict masked tokens from context.
+* Input: token sequence → Output: predict masked tokens from context.
 * Encoder-only models are trained with the **masked language modeling** objective, encouraging the model to build context-sensitive embeddings so that different surface token sequences that point to the same semantics map to nearby representations.
 * **Key vulnerability**: This is limited by the **tokenization bottleneck**. Dialectal text is often split into uncommon token sequences (particularly oversegmented ones), so the model may never see it enough to learn a stable representation.
-  * Tokenization is rigid: small spelling variation --> very different token sequences --> embeddings don't align --> semantic drift
+  * Tokenization is rigid: small spelling variation → very different token sequences → embeddings don't align → semantic drift
   * Example:
-    * tokenizer(student) --> student
-    * tokenizer(studebt) --> stud, eb, t
-* Strengthening robustness:
+    * tokenizer(student) → student
+    * tokenizer(studebt) → stud, eb, t
+* **Strengthening robustness**:
   * Intentionally manipulating token sequences during training, particularly via character-level corruption and subword regularization, encourages the model to build invariant representations across surface variation.
-  * Learning goal: multiple tokenizations (even unusual ones) can yield the same contextual meaning → stronger invariance in the embedding space.
+  * **Learning goal**: multiple tokenizations (even unusual ones) can yield the same contextual meaning → stronger invariance in the embedding space.
 
 ## Decoder-Only Text Models (e.g,. GPT, LLaMA)
 Goal: Robustness in generative mappings.
 
-* Input: left context tokens --> Output: next token prediction
+* Input: left context tokens → Output: next token prediction
 * Decoder-only models are trained with **causal language modeling**, predicting the next token given previous context.
 * **Key vulnerability**: The autoregressive setup of decoder-only models can amplify the tokenization bottleneck in encoder-only models, because the error can propogate forward in generation. 
-  * In addition to the tokenization bottleneck and rigidity issues found in encoder-only models, unusual tokenization sequences can disrupt both understanding of the input *and* quality of generated output.
+  * In addition to the tokenization bottleneck and rigidity issues found in encoder-only models, unusual token sequences can disrupt both understanding of the input *and* quality of generated output.
   * This is especially visible in interactive generative contexts when dialect variation is present.
-* Strengthening robustness:
- * Intentionally manipulating token sequences during training can potentially help with two goals:
-   * varied input forms can still lead to the same intent --> input robustness
-   * meanings map to multiple valid surface continuations --> output diversity
+* **Strengthening robustness**:
+ * Manipulating token sequences during training can potentially help with two goals:
+   * varied input forms can still lead to the same intent → input robustness
+   * meanings map to multiple valid surface continuations → output diversity
+ * However, success may require being more intentional with how this is carried out.
 
 ## Speech Encoders (e.g., wav2vec2, HuBERT)
 Goal: Robustness in latent acoustic/phonetic space.
 
-* Input: speech signal --> Output: predict masked/clustered latent units from context
+* Input: speech signal → Output: predict masked/clustered latent units from context
 * Speech encoders are trained with self-supervised objectives such as masked prediction or clustering. Rather than mapping directly to text, they learn to form stable, context-aware embeddings of the speech signal itself.
 * This means they capture latent acoustic-phonetic structure. In principle, this could support dialect robustness, since the model learns to represent speech frames independent of text.
 * Despite the self-supervised setup, encoders often overfit to the distribution of speakers and dialects in the training data. If the representation space is too narrow, dialectal pronunciations may not be normalized properly, leading to embeddings that are inconsistent with those of the same words in the standard variety.
-* **Key Vulnerability**: If the encoder overfits to narrow acoustic realizations, embeddings diverge across dialects --> downstream models see them as different phones when they shouldn’t.
+* **Key Vulnerability**: If the encoder overfits to narrow acoustic realizations, embeddings diverge across dialects → downstream models see them as different phones when they shouldn’t.
  * For example, a vowel shift common in one dialect might push embeddings into a region the model associates with entirely different phonetic content. Downstream models consuming these embeddings (e.g., ASR, SLU) would then inherit the fragility.
 * Strengthening
  * Augmentation during pretraining (pitch shifting, time stretching, simulated accents) can encourage the model to form embeddings that are invariant to surface-level differences while preserving phonetic identity.
