@@ -14,7 +14,7 @@
 Goal: Robustness in representations.
 
 ### Overview
-* Input: token sequence → Output: predict masked tokens from context.
+* Input: token sequence → predict masked tokens from context → Output: embeddings
 * Encoder-only models are trained with the masked language modeling objective, encouraging the model to build context-sensitive embeddings so that different surface token sequences that point to the same semantics map to nearby representations.
 
 ### Underlying Vulnerabilities wrt Dialects
@@ -53,7 +53,7 @@ Goal: Robustness in generative mappings.
 Goal: Robustness in latent acoustic/phonetic space.
 
 ### Overview
-* Input: speech signal → Output: predict masked/clustered latent units from context
+* Input: speech signal → predict masked/clustered latent units from context → Output: continuous embeddings
 * Speech encoders are trained with self-supervised and unsupervised objectives like masked prediction and clustering. Rather than mapping directly to text, they learn to form stable, context-aware embeddings of the speech signal itself.
 * This means they capture latent acoustic-phonetic structure. In principle, this could support dialect robustness, since the model learns to represent speech frames independent of text.
 
