@@ -58,7 +58,18 @@ papers that clearly don't understand /.../ vs. [...] notation
 "phoneme durations" - wrong because...
 "phoneme chunks" - wrong because...
 
-They also present a long list of phrases in Interspeech 2018 papers misusing "phoneme." I don't doubt that for many of those the author writing the phrase did not really know 
+They also present a long list of phrases in Interspeech 2018 papers misusing "phoneme." I don't doubt that for many of those the author writing the phrase did not really know the precise definition of phoneme or the difference between phonemic and phonetic. At the same time, I can't say all of these are really a misuse...
+"If a phoneme lasts for more than 5ms" - I guess you could say "if the acoustic realization of a phoneme lasts more than 5 ms" but that seems very picky given that NLP writing may not always be known for its precision...
+"treating filled pause as a special ‘phoneme’" - this is a way of concisely describing a modification they are making to their label space, even they seem to know that a filled pause is not actually a phoneme due to the use of quotes around phoneme
 
-## Other linguistics terms that is misused in a lot of NLP writing
+at the same time of course there are plenty that are misuse/don't make sense:
+"universal phoneme mapping"
+"We propose a language-independent phoneme segmentation
+method"
+"We have 252 phonemes, of which there are 213 Mandarin
+and 39 English."
+
+I will also say using phoneme to describe the label space is not totally accurate because per my discussion above it is not clear whether the model is learing phonetic or phonemic representations and it is probably a mix of the two. It begs the question of what is the appropriate term in such contexts (as you could not use phone or phoneme).
+
+## Other linguistics terms that are misused in a lot of NLP writing
 
