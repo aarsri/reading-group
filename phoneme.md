@@ -5,14 +5,38 @@ _Presented by Aarohi Srivastava on 2/13/26_
 
 ## Background
 
-NLP work is grounded in ideas from other disciplines, including linguistics. However, not all researchers maintain a strong NLP-linguistics interface (we all do!), meaning that when it comes time to describe specific situations in NLP with a pretty technical linguistic term, it can instead get oversimplified and overused to mean an instead imprecise meaning. This paper is focused on this situation when it comes to the term phoneme, and specifically calculates statistics of use/misuse in Interspeech papers (a speech conference).
+NLP research is grounded in ideas from other disciplines, particularly linguistics. But not everyone working in NLP maintains a tight interface with linguistic theory, and as a result, technical linguistic terms sometimes get borrowed and used loosely. Today's paper looks at a specific instance of this, the use/misuse of the term "phoneme," particularly in speech conference papers.
 
 Phoneme: "the smallest unit of speech that distinguishes one word from another _in a particular language_.
 
 ## Phonetic vs. Phonemic
 
-This is probably where the confusion starts. These are two different things. Define and disentangle.
-Babies start out as universal listeners of language. You could imagine that they start out with phonetic representations in their brain because they do not have the notion of what a particular language is, and they are primed to natively acquire any language. At some point once they actually start speaking a particular language (or set of languages if bi/trilingual), this distinction will come into play. This is probably why I was looking back at a tea party invitation I made when I was 3 and I wrote "invithashun" and some other words [need to remember] all with an h for the aspirated consonants because I distinguished between aspirated and unaspirated. In Hindi unaspirated t is more common while in English both are used in different settings (per the surrounding sounds). what that means is that since phonemic representation/transcription is _within a language_ you would just use a _t_ in English words like tea and invitation, but phonetic transcription is across languages meaning you would have to use th for aspirated t regardless of the language.
+The distinction between phonetic and phonemic levels of representation are probably the root of most misuse or misunderstanding. 
+* Phonetic: language-independent, concrete, acoustic/articulatory realization
+* Phonemic: language-specific, abstract, contrastive category
+
+### Developmental Intuition
+
+Babies start out as universal listeners of language. They are sensitive to phonetic distinctions across languages and are primed to natively acquire any language. You could imagine that early on, they operate at something like a phonetic level, tracking fine-grained acoustic distinctions without yet grouping them into language-specific categories. As they acquire a particular language (or multiple languages), they reorganize perception into phonemic categories. **They stop distinguishing certain differences because those differences are not contrastive in their language.**
+
+### Different versions of 't'
+
+A while back, my mom had found a tea party invitation I wrote when I was 3. For context, I was bilingual in English and Hindi (but speaking and hearing 75% Hindi), and had formally learned the English alphabet but very little about spelling. I wrote something like this (I can't find it but I promise it's an ideal example):
+This is an **invithaeshun** to a **thea** party.
+When it came to words like invitation and tea that I did not know how to spell, I spelled them out phonetically. What I see now is that I contrasted **aspirated** vs. unaspirated _t_. Though this is not a distinction we make in English writing, it is in Hindi. 
+
+Aspiration: burst of air that follows the release of a stop consonant.
+Stop consonants in English: 
+Understanding English phonology tells us that stop consonants are typically aspirated in xyz positions, and are typically unaspirated in other positions in a word.
+* tea → [tʰi]
+* stop → [stɑp]
+If we replaced [tʰ] with [t] in tea, it might sound slightly accented, but it would still be perceived as *tea*.
+**[tʰ] and [t] are allophones of the same phoneme, /t/, in English.**
+A phonemic transcription need not make this distinction (e.g., /ti/), while a phonetic transcription must.
+(I will say because aspiration is one of the more commonly known features people sometimes do denote it.)
+  
+This is not true in all languages. For instance, in Hindi, stop aspiration is often a **contrastive feature** that can change the meaning of a word.
+
 To sum that up another way phoneme is defined in the paper is "a
 family of uttered sounds2 (segmental elements of speech) in a
 particular language3 which count for practical purposes as if
@@ -72,4 +96,8 @@ and 39 English."
 I will also say using phoneme to describe the label space is not totally accurate because per my discussion above it is not clear whether the model is learing phonetic or phonemic representations and it is probably a mix of the two. It begs the question of what is the appropriate term in such contexts (as you could not use phone or phoneme).
 
 ## Other linguistics terms that are misused in a lot of NLP writing
+The only one that came to mind is writing system vs. alphabet vs. script (which are all different things). I wonder if anyone thinks of another collection of terms?
 
+## A note about Speech LMs
+Popular speech LMs:
+The one that might provide the best coverage of foundational knowledge: 
