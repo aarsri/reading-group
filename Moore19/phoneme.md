@@ -125,11 +125,11 @@ The only one that came to mind is writing system vs. alphabet vs. script (which 
 
 ## The Invathashane
 
-<img src="IMG_5312.jpg" width="400">
-
 There were some words I clearly knew how to spell, but otherwise I was “sounding things out.” If we remove intentionally spelled words, what remains does not look like standard orthography, but it also is not purely phonetic. So what kind of transcription is this? I also apparently developed my own conventions: [i] represented as ea or ee, and [ə] written as something like a_e. These choices were not random; they reflect an emerging mapping between perceived sound categories and symbols.
 
 To me, it looks like a phonemic transcription of my English idiolect at the time, shaped by bilingual acquisition. I seem to have marked distinctions (like aspiration with “h”) that English orthography does not encode, suggesting that those contrasts had not yet been fully collapsed in my internal system. It feels like a snapshot of a representation in transition, somewhere between phonetic detail and stabilized phonemic categories. I’m curious how others would analyze it.
+
+<img src="IMG_5312.jpg" width="400">
 
 ## A Note About Speech LMs
 Popular speech LMs (i.e., generative speech model but not purely text-to-speech):
