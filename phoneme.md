@@ -12,8 +12,8 @@ Phoneme: "the smallest unit of speech that distinguishes one word from another _
 ## Phonetic vs. Phonemic
 
 The distinction between phonetic and phonemic levels of representation are probably the root of most misuse or misunderstanding. 
-* Phonetic: language-independent, concrete, acoustic/articulatory realization
-* Phonemic: language-specific, abstract, contrastive category
+* Phonetic: language-independent fine-grained acoustic/articulatory realization, denoted between square brackets ([]).
+* Phonemic: language-specific contrastive category, denoted between slashes (//).
 
 ### Developmental Intuition
 
@@ -21,27 +21,42 @@ Babies start out as universal listeners of language. They are sensitive to phone
 
 ### Different versions of 't'
 
-A while back, my mom had found a tea party invitation I wrote when I was 3. For context, I was bilingual in English and Hindi (but speaking and hearing 75% Hindi), and had formally learned the English alphabet but very little about spelling. I wrote something like this (I can't find it but I promise it's an ideal example):
-This is an **invithaeshun** to a **thea** party.
-When it came to words like invitation and tea that I did not know how to spell, I spelled them out phonetically. What I see now is that I contrasted **aspirated** vs. unaspirated _t_. Though this is not a distinction we make in English writing, it is in Hindi. 
+A while back, my mom had found a tea party invitation I wrote when I was 3. For context, I was bilingual in English and Hindi (but speaking and hearing 75% Hindi), and had formally learned the English alphabet but very little about spelling. I wrote:
 
-Aspiration: burst of air that follows the release of a stop consonant.
-Stop consonants in English: 
-Understanding English phonology tells us that stop consonants are typically aspirated in xyz positions, and are typically unaspirated in other positions in a word.
-* tea → [tʰi]
-* stop → [stɑp]
-If we replaced [tʰ] with [t] in tea, it might sound slightly accented, but it would still be perceived as *tea*.
-**[tʰ] and [t] are allophones of the same phoneme, /t/, in English.**
-A phonemic transcription need not make this distinction (e.g., /ti/), while a phonetic transcription must.
-(I will say because aspiration is one of the more commonly known features people sometimes do denote it.)
+This is a **invathashane** for the **thea** partea so plees kame.
+
+What I see now (after Darcey pointed it out a while back) is that I maybe contrasted **aspirated** vs. unaspirated /t/. Though this is not a distinction we explicitly make in English, it is in Hindi (they are separate consonants). 
+
+A few notes:
+* Aspiration: burst of air that follows the release of a stop consonant.
+* Voiced vs. voiceless consonant: minimal feature of articulation where the vocal chords would (voiced) or would not (voiceless) vibrate. Consider [p] vs. [b] or [t] vs. [d].
+
+Per English phonology, when a voiceless stop consonant is word-initial and/or at the onset of a stressed syllable (e.g., tea, pin, underpin), it is aspirated. Examples where it is not aspirated: stove, spy. (This is not a complete phonological analysis of aspiration in English.)
+* Consider: tea → [tʰi]. If we replaced [tʰ] with [t] in tea, it might sound slightly accented, but it would still be perceived as *tea*.
+* **[tʰ] and [t] are allophones of the same phoneme, /t/, in English.**
+* This is not true in all languages.
+
+A phonemic transcription need not make this distinction (e.g., /ti/), while a phonetic transcription must. (It may still be noted in phonemic transcriptions because it is a more obvious feature, but it does not need to be there.)
+
+This brings us to another definition of phoneme provided in the paper: "a family of uttered sounds (segmental elements of speech) in a particular language which count for practical purposes as if they were one and the same."
   
-This is not true in all languages. For instance, in Hindi, stop aspiration is often a **contrastive feature** that can change the meaning of a word.
+In Hindi, stop aspiration is a **contrastive feature** that can change the meaning of a word. So is the place of articulation for t!
+* ताल - /t̪aːli/ - to clap
+* थाल - /t̪ʰaːli/ - plate
+* टोक - /ʈoːk/ - to pester/interrupt/object
+* ठोक - /ʈʰoːk/ - to hammer (hit a nail)
 
-To sum that up another way phoneme is defined in the paper is "a
-family of uttered sounds2 (segmental elements of speech) in a
-particular language3 which count for practical purposes as if
-they were one and the same" i.e., each phonemic symbol would be a collection of close but different sounds. Another example could be with accent or dialect. In English we hear so many different accents (e.g., my mom doesn't really say thank you with an american th it's different) but we squash them into the same representation in our head like you will still hear her thank you as thank you. So at this point in our head with the frame of reference of a particular language we have phonemic rather than phonetic representations. 
-If it's confusing to think about the fact that a single phoneme is a cluster of sounds and thinking about where to draw that line, one way to think about it is if two phones are swapped out as minimal pairs in the word, does it make the word different to a native listener, or would they perceive it as the same. So if you think about it, whether we said "tea" with an aspirated t or with an unaspirated t, we will take it as the same word (maybe you will perceive an accent but nothing more). In contrast if we said "dea" party with a d there it would no longer sound like the same word. This brings about another pertinent concept of allophone. In English, aspirated and unaspirated t are _allophones of the same phoneme_, while t and d are distinct phonemes. This phrase "allophones of the same phoneme" truly sticks in my head bc I think it was drilled into our head in intro linguistics. In another language perhaps unaspirated and aspirated t would actually make the word different and would thus be considered distinct phonemes for that language. And to be clear the phonetic transcription would mean to use [] and you would always have to do t^h vs t while in a phonemic transcription you use // and you may not have to differentiate t^h and t you might just write t.
+Some notes:
+* Dental, alveolar and retroflex refer to the place of articulation, or where the tip of the tounge is when producing the sound. Alveolar is towards the front of the roof of the mouth while retroflex is further back. Dental would be directly behind/on the front teeth.
+* [t]: alveolar
+* [t̪]: dental
+* [ʈ]: retroflex
+
+In Hindi, a phonemic transcription must distinguish /t̪/, /t̪ʰ/, /ʈ/, and /ʈʰ/, because both place (dental vs retroflex) and aspiration are contrastive. In English, by contrast, these distinctions are not phonemic. **Even if a Hindi-accented speaker realized “tea” as [ti], [t̪i], or [ʈi], all of these would be mapped onto the same English phoneme /t/**, since none of these differences signal a change in lexical meaning in English.
+
+Takeaway: I hope these examples illustrate the difference between phonetic and phonemic levels of transcription, and when to use [] and // (which I tried to do correctly). When we are talking about a particular language, we should use // because we are on the level of the phonology of the language. When we are talking across languages we should use [] or if using // specify which language that phonemic transcription is for (it cannot be language-independent). When we are just talking about sounds in general we should use [], but that also means we should be as precise as possible with our IPA symbols and cannot collapse them to an English view of the sounds (e.g., using [t] instead of [t̪] because we thought they were the same)
+
+A phoneme is defined by the contrastive structure of a particular language, not by universal acoustic substance. The brackets we choose signal which level of representation we are committing to.
 
 ## Implications
 
