@@ -82,19 +82,24 @@ The paper points out three implications of why this phonetic–phonemic distinct
    * “...treat any sub-word acoustic unit as a phoneme.”
    * “In phonetics, it is believed that when one pronounces two neighbouring phonemes, there often exists joint frames that can be a very short pause belonging to neither phoneme...”
    * Equating phonemes with “sound symbols” or “sub words.”
-In the paper, the authors write that “what is perhaps most concerning is that 98% of the INTERSPEECH-2018 papers that used the term ‘phoneme’ did not provide any form of definition or explanation, presumably because the authors assumed that everyone knows what it means.” I personally do not find that concerning. If a term is used correctly and in context, it does not need to be redefined in every paper. If a paper is not centrally concerned with the phonetic vs. phonemic distinction, a formal definition may be unnecessary. On the other hand, if the term is being used incorrectly, attempting to define it would not fix the problem.
+
+   In the paper, the authors write that “what is perhaps most concerning is that 98% of the INTERSPEECH-2018 papers that used the term ‘phoneme’ did not provide any form of definition or explanation, presumably because the authors assumed that everyone knows what it means.” I personally do not find that concerning. If a term is used correctly and in context, it does not need to be redefined in every paper. If a paper is not centrally concerned with the phonetic vs. phonemic distinction, a formal definition may be unnecessary. On the other hand, if the term is being used incorrectly, attempting to define it would not fix the problem.
+
 2. 40% of the 265 papers used the term “phoneme” in a way that could be construed as misuse by the authors. Examples include:
    * Papers that clearly conflate phonemic (/…/) and phonetic ([…]) notation.
    * References to “phonemic segmentation,” as if phonemes correspond to acoustically segmentable units.
    * Mentions of “phoneme durations,” implying that phonemes themselves have measurable temporal extent.
    * Phrases such as “phoneme chunks,” which treat phonemes as concrete sound blocks.
-The authors also list many specific phrases from INTERSPEECH papers that they consider misuse. I do not doubt that, in most of these cases, there is a flaw related to the phonemic/phonetic distinction. At the same time, I am not convinced that every cited example constitutes a serious conceptual error. A few such examples:
-  * I think “If a phoneme lasts for more than 5 ms...” could more precisely be written as “if the acoustic realization of a phoneme lasts more than 5 ms,” but this feels somewhat pedantic. In NLP writing, shorthand often stands in for the intended level of abstraction.
-  * “Treating filled pause as a special ‘phoneme’” seems to acknowledge its own looseness through the use of quotation marks, and may simply be a concise way of describing a modification to a model’s label space.
-That said, there are many clear cases of misuse that appear to misunderstand the language-specific and contrastive nature of phonemes, including:
-  * “Universal phoneme mapping”
-  * “We propose a language-independent phoneme segmentation method”
-  * “We have 252 phonemes, of which there are 213 Mandarin and 39 English.”
+
+   The authors also list many specific phrases from INTERSPEECH papers that they consider misuse. I do not doubt that, in most of these cases, there is a flaw related to the phonemic/phonetic distinction. At the same time, I am not convinced that every cited example constitutes a serious conceptual error. A few such examples:
+     * I think “If a phoneme lasts for more than 5 ms...” could more precisely be written as “if the acoustic realization of a phoneme lasts more than 5 ms,” but this feels somewhat pedantic. In NLP writing, shorthand often stands in for the intended level of abstraction.
+     * “Treating filled pause as a special ‘phoneme’” seems to acknowledge its own looseness through the use of quotation marks, and may simply be a concise way of describing a modification to a model’s label space.
+       
+   That said, there are many clear cases of misuse that appear to misunderstand the language-specific and contrastive nature of phonemes, including:
+     * “Universal phoneme mapping”
+     * “We propose a language-independent phoneme segmentation method”
+     * “We have 252 phonemes, of which there are 213 Mandarin and 39 English.”
+
 3. The authors present additional empirical results comparing the use of "phoneme" in a few different conferences and in science vs. technology work. They find the distributions of usage are quite similar across these comparisons. Overall, they find that only about one-third of papers explicitly mention phonemes in the first place. It is worth reiterating that this paper is from 2019, so statistics may be different (and interesting to know) in more recent times.
 
 ## Implications to NLP/Speech Research
