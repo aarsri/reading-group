@@ -7,7 +7,7 @@ _Presented by Aarohi Srivastava on 2/13/26_
 
 NLP research is grounded in ideas from other disciplines, particularly linguistics. But not everyone working in NLP maintains a tight interface with linguistic theory, and as a result, technical linguistic terms sometimes get borrowed and used loosely. Today's paper looks at a specific instance of this, the use/misuse of the term "phoneme," particularly in speech conference papers.
 
-Phoneme: "the smallest unit of speech that distinguishes one word from another _in a particular language_.
+Phoneme: "the smallest unit of speech that distinguishes one word from another _in a particular language_."
 
 ## Phonetic vs. Phonemic
 
@@ -19,24 +19,24 @@ The distinction between phonetic and phonemic levels of representation are proba
 
 Babies start out as universal listeners of language. They are sensitive to phonetic distinctions across languages and are primed to natively acquire any language. You could imagine that early on, they operate at something like a phonetic level, tracking fine-grained acoustic distinctions without yet grouping them into language-specific categories. As they acquire a particular language (or multiple languages), they reorganize perception into phonemic categories. **They stop distinguishing certain differences because those differences are not contrastive in their language.**
 
-### Different versions of 't'
+### Understanding the Distinction via English vs. Hindi
 
-A while back, my mom had found a tea party invitation I wrote when I was 3. For context, I was bilingual in English and Hindi (but speaking and hearing 75% Hindi), and had formally learned the English alphabet but very little about spelling. I wrote:
+A while back, my mom had found a tea party invitation I wrote when I was 3. For context, I was bilingual in English and Hindi (but speaking and hearing 75% Hindi) and had learned the English alphabet but very little about spelling. I wrote:
 
 This is a **invathashane** for the **thea** partea so plees kame.
 
-What I see now (after Darcey pointed it out a while back) is that I maybe contrasted **aspirated** vs. unaspirated /t/. Though this is not a distinction we explicitly make in English, it is in Hindi (they are separate consonants). 
+What I see now (after Darcey pointed it out a while back) is that I maybe contrasted **aspirated** vs. unaspirated t in my writing. Though this is not a distinction we explicitly make in English, it is in Hindi (they are separate consonants). 
 
 A few notes:
 * Aspiration: burst of air that follows the release of a stop consonant.
-* Voiced vs. voiceless consonant: minimal feature of articulation where the vocal chords would (voiced) or would not (voiceless) vibrate. Consider [p] vs. [b] or [t] vs. [d].
+* Voiced vs. voiceless consonant: Voiced consonants involve vibration of the vocal folds, while voiceless consonants do not. Consider [p] vs. [b] or [t] vs. [d].
 
 Per English phonology, when a voiceless stop consonant is word-initial and/or at the onset of a stressed syllable (e.g., tea, pin, underpin), it is aspirated. Examples where it is not aspirated: stove, spy. (This is not a complete phonological analysis of aspiration in English.)
 * Consider: tea → [tʰi]. If we replaced [tʰ] with [t] in tea, it might sound slightly accented, but it would still be perceived as *tea*.
 * **[tʰ] and [t] are allophones of the same phoneme, /t/, in English.**
 * This is not true in all languages.
 
-A phonemic transcription need not make this distinction (e.g., /ti/), while a phonetic transcription must. (It may still be noted in phonemic transcriptions because it is a more obvious feature, but it does not need to be there.)
+An English phonemic transcription need not make this distinction (e.g., /ti/), while a phonetic transcription must. (It may still be noted in phonemic transcriptions because it is a more obvious feature, but it does not need to be there.)
 
 This brings us to another definition of phoneme provided in the paper: "a family of uttered sounds (segmental elements of speech) in a particular language which count for practical purposes as if they were one and the same."
   
@@ -46,24 +46,33 @@ In Hindi, stop aspiration is a **contrastive feature** that can change the meani
 * टोक - /ʈoːk/ - to pester/interrupt/object
 * ठोक - /ʈʰoːk/ - to hammer (hit a nail)
 
-Some notes:
-* Dental, alveolar and retroflex refer to the place of articulation, or where the tip of the tounge is when producing the sound. Alveolar is towards the front of the roof of the mouth while retroflex is further back. Dental would be directly behind/on the front teeth.
-* [t]: alveolar
-* [t̪]: dental
-* [ʈ]: retroflex
+Dental, alveolar and retroflex refer to the **place of articulation**, or where the tip of the tounge is when producing the sound. Alveolar is towards the front of the roof of the mouth while retroflex is further back. Dental would be directly behind/on the front teeth.
+* alveolar: [t]
+* dental: [t̪]
+* retroflex: [ʈ]
 
 In Hindi, a phonemic transcription must distinguish /t̪/, /t̪ʰ/, /ʈ/, and /ʈʰ/, because both place (dental vs retroflex) and aspiration are contrastive. In English, by contrast, these distinctions are not phonemic. **Even if a Hindi-accented speaker realized “tea” as [ti], [t̪i], or [ʈi], all of these would be mapped onto the same English phoneme /t/**, since none of these differences signal a change in lexical meaning in English.
 
-Takeaway: I hope these examples illustrate the difference between phonetic and phonemic levels of transcription, and when to use [] and // (which I tried to do correctly). When we are talking about a particular language, we should use // because we are on the level of the phonology of the language. When we are talking across languages we should use [] or if using // specify which language that phonemic transcription is for (it cannot be language-independent). When we are just talking about sounds in general we should use [], but that also means we should be as precise as possible with our IPA symbols and cannot collapse them to an English view of the sounds (e.g., using [t] instead of [t̪] because we thought they were the same)
+Takeaway: I hope these examples clarify the distinction between phonetic and phonemic levels of representation, and when to use square brackets [] versus slashes // (which I have tried to do consistently). 
+* Phonemic transcription (//) represents contrastive categories within a particular language. It abstracts away from predictable variation and encodes only those distinctions that differentiate words in that language. Because phonemes are language-specific, a phonemic transcription must always be interpreted relative to a particular language. There is no such thing as a language-independent phonemic representation.
+* Phonetic transcription ([]) represents precise articulatory or acoustic realization, independent of whether they are contrastive in any given language. When discussing sounds across languages, square brackets are appropriate.
+* Importantly, when using phonetic notation, we should be as precise as necessary. We cannot collapse distinctions simply because they are not contrastive in English. For example, [t], [t̪], and [ʈ] are articulatorily distinct sounds, even if English speakers map them all to /t/. Using [t] to represent all of them would impose an English phonological interpretation onto what is meant to be a language-neutral phonetic description. I suspect that is a key issue if non-linguists try to write a phonetic transcription.
 
-A phoneme is defined by the contrastive structure of a particular language, not by universal acoustic substance. The brackets we choose signal which level of representation we are committing to.
+*A phoneme is defined by the contrastive structure of a particular language, not by universal acoustic substance. The brackets we choose signal which level of representation we are committing to.*
 
 ## Implications
 
-The paper points out three implications of why we care about this distinction, particularly, why a phonemic representation is often valuable. The first is the phoneme restoration effect, meaning if a short section of speech was cut out and replaced by another sound, a native or proficient listener would not detect anything was missing. (The reason i say native for all of these is also worth mentioning. Depending on someone's level of proficiency in a langauge these things may or may not apply, i.e., they may have too much trouble to restore what the word must have been if they are not locked into the language in their language faculty in their brain the way they are in their native language). The second is an extension, that when you're expecting to hear a certain sequence of sounds in a particular language, you will perceive it as such. Basically if you yell a question like johnny did you feed your fish yet across the house you will expect to hear just yes no or i don't know and so the way it reaches you might really just be muffled grunts but you will put it together. I honestly don't see how that one is relevant. 
+The paper points out three implications of why this phonetic–phonemic distinction matters, and in particular why a phonemic representation is often valuable.
 
-in terms of implications to nlp, 
-you need context no matter what, but you need context much more to do phonemic rather than phonetic transcription. it begs the question of which task is easier or what it takes to train a model to do either one. also if one model is trained to do one it can be difficult to adapt it to do the other. i think this is particularly true if a model was trained to do phonemic transcription (which i think it is bc you could think of orthography as a phonemic representation in languages with an alphabetic script) and then you try to have it do phonetic transcription or in some way differentiate between accent or dialect. same for us, we have an intuition of the phonemic transcription and we certainly know how to write in our alphabetic script, but if we are asked to do a phonetic transcription, aside from needing to know the IPA symbols, it would take us a lot of effort to gain that intuition of how to differentiate stuff like aspiration vs. unaspirated and other distinguishing features that we otherwise don't distinguish in our language.
+1. Phoneme restoration effect: if a short section of speech was cut out and replaced by another sound, a native or proficient listener would not detect anything was missing. This is a strong demonstration that we are not simply decoding acoustic input; we are mapping it onto phonemic expectations shaped by the structure of our language. A phonetic transcription, being language-independent, is not supposed to fill in those blanks.
+    *  I think it is important to note that the paper implicitly assumes native or highly proficient listeners in most descriptions. Such effects depend on having a stable internalized phonemic system for a language. If someone is not yet fully locked into the phonology of a language, like an early L2 learner, a lot of this would not apply.
+2. When we expect to hear a particular sequence of sounds in a given linguistic context, we tend to perceive it as such, even if the acoustic signal is degraded. For example, if you yell across the house, “Johnny, did you feed your fish yet?”, you are realistically only expecting to hear something like “yes,” “no,” or “I don’t know.” What reaches your ears may just be muffled grunts, but you will often reconstruct the intended response anyway. (Though this is mentioned as a distinct implication in the paper, I think it conveys the same point as #1.)
+3. Coarticulation: articulatory gestures overlap and unfold over time, so phonemic information is distributed across neighboring segments rather than packaged into clearly bounded acoustic units, challenging the idea that speech is composed of tidy, bead-like elements. Why they mention this in the paper is unclear to me, but I think the point is that due to this reality, phonemes are inherently not acoustic units and should not be treated as such (while phones are).
+
+### Implications to Computational Research
+I think the paper is missing this section.
+
+
 
 ## Results
 
