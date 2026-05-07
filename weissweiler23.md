@@ -130,48 +130,14 @@ For Tamil, the instruction part of the prompt is omitted because ChatGPT was unr
 ### Takeaways
 
 * For each language, best ChatGPT config never outperforms the best baseline.
-* Short prompts work better than long prompts.
+* For English and kind of for Turkish, short prompts work better than long. For German and Tamil, no major difference.
+* Substantial increase in performance going from zero-shot to one- or few-shot for Tamil and Turkish, but not major for English and German.
 
-#### English
+| Language | Best baseline(s)          | Neural/non-neural                                           |
+| -------- | ------------------------- | ----------------------------------------------------------- |
+| English  | **ARL 100.00**, FIT 98.00 | Best is non-neural; neural FIT is close.                    |
+| German   | **ARL 94.25**, FIT 92.87  | Best is non-neural; neural FIT is close.                    |
+| Tamil    | **FIT 63.28**, ARL 61.48  | Best is neural, but non-neural ARL is close.                |
+| Turkish  | **PPI 68.00**, FIT 67.00  | Best is paradigm-based/non-neural-ish; neural FIT is close. |
 
-- ChatGPT performs worse than the strongest baselines and below average human performance.
-- 
-- Best ChatGPT score: **82.80** with short 1-shot.
-- The model sometimes outputs real English words instead of properly inflecting the nonce word.
-
-#### German
-
-- ChatGPT performs strongly.
-- Best ChatGPT score: **88.94** with short 1-shot.
-- This is close to human-level performance, given that human acc@5 is about 88%.
-- Long vs. short prompt differences are small.
-
-#### Tamil
-
-- ChatGPT performs much worse than the supervised baselines.
-- Zero-shot produces no correct outputs.
-- Few-shot improves performance substantially.
-- Best ChatGPT score: **43.36** with short few-shot.
-- The authors note that this is still somewhat reasonable given low human agreement on Tamil nonce forms.
-
-#### Turkish
-
-- ChatGPT performs worse than English and German.
-- Short prompts help more than long prompts.
-- Best ChatGPT score on the main Turkish inflection task: **59.00** with short few-shot.
-- For the three harder Turkish reinflection tasks, scores are lower overall:
-
-| Prompt type | Turkish reinflection average |
-|---|---:|
-| Long 0-shot | 3.00 ± 1.80 |
-| Long 1-shot | 20.67 ± 5.73 |
-| Long few-shot | 33.33 ± 4.94 |
-| Short 0-shot | 7.00 ± 4.33 |
-| Short 1-shot | 18.67 ± 6.18 |
-| Short few-shot | 31.00 ± 4.23 |
-
-### 8. Overall takeaway
-
-ChatGPT shows some ability to generalize morphological patterns, especially with short analogy-style prompts, but it does **not** outperform strong morphology-specific baselines. Performance is strongest for German, moderate for English, weaker for Turkish, and weakest for Tamil. Few-shot prompting helps in several cases, but the improvement is inconsistent across languages.
-
-
+## Analysis
