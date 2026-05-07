@@ -114,7 +114,7 @@ For Tamil, the instruction part of the prompt is omitted because ChatGPT was unr
 
 | Method | English | German | Tamil | Turkish |
 |---|---:|---:|---:|---:|
-| Human annotator performance | 87.64 ± 12.13 | 87.88 ± 10.34 | 43.85 ± 26.95 | — |
+| Human annotator | 87.64 ± 12.13 | 87.88 ± 10.34 | 43.85 ± 26.95 | — |
 | ARL | **100.00** | **94.25** | 61.48 | 60.00 |
 | MinGen | 62.00 | 64.37 | 49.18 | 40.00 |
 | FIT | 98.00 ± 1.26 | 92.87 ± 0.74 | **63.28 ± 3.36** | 67.00 ± 4.58 |
@@ -124,14 +124,18 @@ For Tamil, the instruction part of the prompt is omitted because ChatGPT was unr
 | ChatGPT: long 1-shot | 73.60 ± 6.97 | 85.42 ± 2.52 | 14.52 ± 7.48 | 20.00 ± 14.14 |
 | ChatGPT: long few-shot | 76.40 ± 4.45 | 87.36 ± 2.37 | 42.70 ± 3.96 | 54.00 ± 10.20 |
 | ChatGPT: short 0-shot | 75.40 ± 5.87 | 88.62 ± 1.64 | 0.00 | 3.00 ± 4.58 |
-| ChatGPT: short 1-shot | 82.80 ± 5.60 | 88.94 ± 2.35 | 3.28 ± 3.99 | 58.00 ± 7.48 |
-| ChatGPT: short few-shot | 78.60 ± 2.84 | 88.33 ± 1.15 | 43.36 ± 3.12 | 59.00 ± 9.43 |
+| ChatGPT: short 1-shot | _**82.80**_ ± 5.60 | _**88.94**_ ± 2.35 | 3.28 ± 3.99 | 58.00 ± 7.48 |
+| ChatGPT: short few-shot | 78.60 ± 2.84 | 88.33 ± 1.15 | _**43.36**_ ± 3.12 | _**59.00**_ ± 9.43 |
 
+### Takeaways
+
+* For each language, best ChatGPT config never outperforms the best baseline.
+* Short prompts work better than long prompts.
 
 #### English
 
 - ChatGPT performs worse than the strongest baselines and below average human performance.
-- Short prompts work better than long prompts.
+- 
 - Best ChatGPT score: **82.80** with short 1-shot.
 - The model sometimes outputs real English words instead of properly inflecting the nonce word.
 
