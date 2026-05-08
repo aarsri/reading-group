@@ -1,9 +1,11 @@
-# Counting the Bugs in ChatGPT’s Wugs: A Multilingual Investigation into the Morphological Capabilities of a Large Language Model
+# Morphological Capabilities of LLMs
+
+_Presented by Aarohi Srivastava on 5/8/26_
+
+## Counting the Bugs in ChatGPT’s Wugs: A Multilingual Investigation into the Morphological Capabilities of a Large Language Model
 _Leonie Weissweiler et al. at EMNLP 2023_
 
-_Presented by Aarohi Srivastava on 5/6/26_
-
-## Wug Test (Jean Berko Gleason, 1958)
+### Wug Test (Jean Berko Gleason, 1958)
 
 > This is a wug. Now there's another one. These are two ___.
 
@@ -14,7 +16,7 @@ Child language acquisition experiment that demonstrated that young children do n
 This paper conducts the Wug Test using ChatGPT (gpt-3.5-turbo-0613) with nonce words from typologically diverse 4 languages: English, German, Tamil,
 and Turkish.
 
-## Background
+### Background
 
 The Wug Test focuses on inflectional morphology (changes to form) rather than derivational morphology (changes role/meaning). 
 * Inflection: I listen, she listens. In the past we listened.
@@ -33,11 +35,11 @@ Languages used:
 * Turkish: fully agglutinative
 In addition to different morphological systems, these languages come from different language families and vary in resourcedness.
 
-## Data Creation
+### Data Creation
 
 A big part of this work is to develop sets of nonce words in the four languages to be used in the Wug Tests. Data is available here: github.com/dmort27/chatgpts-wugs
 
-### English
+#### English
 * Focus: past tense formation of verbs.
 * Starting point: 50 short irregular English verbs from UniMorph, then altered one or two letters to create nonce verbs not found in the dataset.
 * Annotation: 
@@ -45,7 +47,7 @@ A big part of this work is to develop sets of nonce words in the four languages 
   * 28 volunteer annotators produced possible past-tense forms.
   * Most common human responses were regular past-tense forms with -ed.
 
-### German
+#### German
 * Focus: plural noun formation, which is complex because German has several competing plural strategies.
 * Starting point: Generated 200 nonce nouns from Unipseudo (4-7 characters), then filtered down to 174.
 * Annotation: 
@@ -54,7 +56,7 @@ A big part of this work is to develop sets of nonce words in the four languages 
   * 21 volunteer annotators provided plural forms.
   * The result was a ranked list of plausible plural forms for each nonce noun.
 
-### Tamil
+#### Tamil
 * Focus: past tense verb inflection
   * Tamil verbs are morphologically rich: they can encode tense, transitivity, person, number, and sometimes gender.
   * The authors simplified the task by focusing on past tense, intransitive verbs, third-person singular masculine agreement.
@@ -64,7 +66,7 @@ A big part of this work is to develop sets of nonce words in the four languages 
   * Inter-annotator agreement was relatively low, partly because Tamil verb-class assignment can depend on historical/linguistic context.
   * I don't think this one has a sentence frame; the format seems to be {nonce} --> ___ [must be past tense]
 
-### Turkish
+#### Turkish
 * Focus: inflection and reinflection
   * first-person singular agreement + past tense [reinflection]
   * second-person plural agreement + reported/inferential past + negation [reinflection]
@@ -75,9 +77,9 @@ A big part of this work is to develop sets of nonce words in the four languages 
   * Each of the four had up to five real-word examples and 10 nonce-root test examples.
   * Stimuli and gold annotations came from one Turkish annotator.
 
-## Experiments
+### Experiments
 
-### Setup
+#### Setup
 
 * Compare `gpt-3.5-turbo-0613` against human annotations and supervised morphology baselines on the above languages/tasks.
   * Training data for baselines come from a few sources including SIGMORPHON 2023 dataset.
@@ -86,14 +88,14 @@ A big part of this work is to develop sets of nonce words in the four languages 
   * Main evaluation uses `acc@5` (Turkish uses `acc@1`).
 * Only the first word of ChatGPT’s response is scored; non-word characters are removed.
 
-### Baselines
+#### Baselines
 * Affix Rule Learner (ARL): Non-neural system that learns prefix/suffix edit rules from training data.
 * Minimal Generalization Learner (MinGen): Rule-based model that learns transformations from lemma → inflected form.
 * Feature Invariant Transformer (FIT): Character-level transformer for generating inflected forms from features.
 * Principal Parts for Inflection (PPI): Uses key paradigm slots to infer other inflected forms.
 * Analogical Encoder-Decoder (AED): Neural encoder-decoder model using analogical morphological patterns.
 
-### Prompting 
+#### Prompting 
 
 > Fill in the blank with the correct past tense of the word ‘wug’. Give your response in one word.
 
@@ -110,7 +112,7 @@ Two prompt formats:
 
 For Tamil, the instruction part of the prompt is omitted because ChatGPT was unreliable when given Tamil instructions.
 
-## Results
+### Results
 
 | Method | English | German | Tamil | Turkish |
 |---|---:|---:|---:|---:|
@@ -127,7 +129,7 @@ For Tamil, the instruction part of the prompt is omitted because ChatGPT was unr
 | ChatGPT: short 1-shot | _**82.80**_ ± 5.60 | _**88.94**_ ± 2.35 | 3.28 ± 3.99 | 58.00 ± 7.48 |
 | ChatGPT: short few-shot | 78.60 ± 2.84 | 88.33 ± 1.15 | _**43.36**_ ± 3.12 | _**59.00**_ ± 9.43 |
 
-### Takeaways
+#### Takeaways
 
 * For each language, best ChatGPT config never outperforms the best baseline.
 * For English and kind of for Turkish, short prompts work better than long. For German and Tamil, no major difference.
@@ -138,6 +140,58 @@ For Tamil, the instruction part of the prompt is omitted because ChatGPT was unr
 | English  | **ARL 100.00**, FIT 98.00 | Best is non-neural; neural FIT is close.                    |
 | German   | **ARL 94.25**, FIT 92.87  | Best is non-neural; neural FIT is close.                    |
 | Tamil    | **FIT 63.28**, ARL 61.48  | Best is neural, but non-neural ARL is close.                |
-| Turkish  | **PPI 68.00**, FIT 67.00  | Best is paradigm-based/non-neural-ish; neural FIT is close. |
+| Turkish  | **PPI 68.00**, FIT 67.00  | Best is non-neural; neural FIT is close. |
 
-## Analysis
+### Analysis
+* Task: The German version of the task was more complicated because rules are not clear; despite this, ChatGPT's performance was the highest for German, suggesting morphological complexity alone does not explain performance differences. At the same time, ChatGPT overgeneralizes in picking _-en_ and _-s_ German plural markers, and so frequency could play a role too.
+* Tokenization: The number of tokens a nonce word was split into did not significantly affect ChatGPT’s performance, suggesting tokenization was not a major factor in these experiments.
+* Impact of *k* in `acc@k`: The gap between ChatGPT and the baselines increases as k increases. Baselines generate a wider range of plausible human-like inflections, while ChatGPT often produces either the top response or an implausible one.
+* Real world bias: ChatGPT sometimes outputs an inflected form of a real word instead of properly inflecting the nonce word. This bias is strongest in English and German.
+  * English:
+    * dedo → did
+    * blus → blushed
+    * fride → fried
+  * German:
+    * Ozeak → Ozeane
+    * Instite → Institute
+    * Schlave → Sklaven
+
+### Conclusion
+
+ChatGPT (gpt-3.5-turbo-0613) seems imitate morphology quite well in certain settings, but it does not exhibit consistent morphological abstraction or generalization capability, especially when it comes to typologically diverse languages and unseen nonce words.
+
+## Evaluating Morphological Compositional Generalization in Large Language Models
+_Ismayilzada et al._ at NAACL 2025
+
+### Core Question
+
+- The paper asks whether LLMs can do morphological compositional generalization.
+- In simpler terms: can models combine roots and morphemes in systematic, human-like ways, especially for novel words?
+
+### How it relates to Weissweiler et al. (2023)
+
+- Like the earlier paper, it uses Wug tests to avoid simply testing memorization.
+- Like the earlier paper, it compares LLMs against human performance.
+- Like the earlier paper, it finds that LLMs struggle with novel morphological forms (nonce words).
+- The main difference is that this paper focuses more explicitly on compositionality, so not just whether the model can produce the correct inflection, but also 
+  - not just “can the model produce the right inflection?”
+  - but “can the model combine morphemes productively and systematically?”
+
+### What Ismayilzada et al. (2025) does differently
+
+- It focuses on Turkish and Finnish, both highly agglutinative languages.
+- It tests two capabilities:
+  - Productivity: generate a valid word from a root plus morphemes.
+  - Systematicity: judge whether a morpheme combination is valid.
+- It evaluates newer multilingual LLMs, including GPT-4, Gemini-1.5, Aya-23, and Qwen-2.5.
+- It compares in-distribution real roots with out-of-distribution nonce roots.
+
+### Main findings
+
+- LLMs still fall far below humans on morphological generalization.
+- Models struggle especially with nonce roots, supporting Weissweiler et al.’s finding that LLMs do not robustly generalize to novel word forms.
+- Performance drops sharply as the number of morphemes increases.
+- Models do better on judging individual forms than generating forms, but their judgments are not fully consistent.
+- Human performance is much more stable across real and nonce roots.
+- Tokenization again does not seem to fully explain the poor performance.
+- The paper also finds evidence of real-word bias, similar to Weissweiler et al., where models often drift toward real/frequent words rather than following the requested morphological composition.
