@@ -196,7 +196,8 @@ _Ismayilzada et al._ at NAACL 2025
 - **Tokenization** does not seem to be a driving factor. They compare morphologically aligned units (tokens are real morpheme pieces) vs. original tokenizer and do not see a difference in performance. At the same time, they do not do anything to tune the model to the new token sequences; the model is suddenly being asked to process inputs in a format that may not match its training distribution.
 - **Real world bias**: The paper also finds evidence of real-word bias, similar to Weissweiler et al., where models often drift toward real/frequent words rather than following the requested morphological composition.
 - **Order of morphemes**: Presenting morphemes in the correct order rather than shuffled order increases productivity task performance greatly.
-- **Number of morphemes** Performance declines sharply as morphological complexity increases.
+- **Number of morphemes**: Performance declines sharply as morphological complexity increases.
+- **Model choice**: GPT-4 does the best among the models tested. Otherwise, when comparing within the same model family, the larger size does a bit better, but scale does not seem to solve the problem.
 
 ### Effect of morphological complexity
 
