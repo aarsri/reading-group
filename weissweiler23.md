@@ -191,7 +191,9 @@ _Ismayilzada et al._ at NAACL 2025
 - LLMs still fall far below humans on morphological generalization.
 - Models struggle especially with nonce roots, supporting Weissweiler et al.’s finding that LLMs do not robustly generalize to novel word forms.
 - Performance drops sharply as the number of morphemes increases.
-- Models do better on judging individual forms than generating forms, but their judgments are not fully consistent.
+- Models do better on systematicity than productivity, but even with systematicity the models are not consistently applying a particular rule.
 - Human performance is much more stable across real and nonce roots.
-- Tokenization again does not seem to fully explain the poor performance.
+- They compare standard tokenization with morphological tokenization and find that they lead to similar performance. This indicates to them that poor performance cannot simply be blamed on tokenization.
 - The paper also finds evidence of real-word bias, similar to Weissweiler et al., where models often drift toward real/frequent words rather than following the requested morphological composition.
+
+more on greater number of morphemes corresponding to worse performance
