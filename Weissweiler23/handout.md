@@ -205,7 +205,10 @@ _Ismayilzada et al._ at NAACL 2025
 - In the productivity task, GPT-4’s performance drops sharply as the number of morphemes increases. For longer Turkish forms, performance falls close to zero. Humans do not show the same sharp drop.
 - In the systematicity task, Macro-F1 stays more stable, but consistency declines with complexity. This means models may judge some individual forms correctly, but become less consistent as morpheme chains get longer.
 
-[include Figure 6]
+<p float="left">
+  <img src="1.png" width="350" />
+  <img src="2.png" width="350" />
+</p>
 
 ### Effect of context
 
@@ -214,6 +217,39 @@ _Ismayilzada et al._ at NAACL 2025
 - For systematicity, context often hurts performance, especially for smaller models and OOD nonce roots.
 - Interpretation: Context does not solve the morphology problem. In some cases, it adds extra processing burden. This is important because the contextual version is closer to ordinary language modeling, so failure there suggests the problem is not just an artifact of an artificial task.
 
-## Overall Takeaways
+## Overall Takeaways and Discussion
 
-### Discussion
+To me, these papers are most useful not just as evidence that LLMs “do not know morphology,” but as evidence that current models lack robust compositional control over morphology when lexical familiarity, short-form memorization, and surface fluency are not available.
+
+### Comparison to human abilities
+
+A central framing in both papers is the comparison between LLMs and humans. It is not obvious to me that an LLM should possess every human linguistic ability in the same way humans do. Human performance reflects years of embodied, social, and metalinguistic language experience, while LLMs learn from text prediction. So a gap between humans and models is not automatically surprising. I think what both papers definitely suggest that is useful is that fluency alone should not be taken as evidence of human-like linguistic abstraction.
+
+### Are the tasks reasonable?
+
+Overall, the tasks seem reasonable as diagnostic probes, but they are not perfect measures of ordinary language use. I would view them as stress tests that we would think (maybe?) that models could do and so the results can be surprising. 
+* **Do you think the results are surprising?**
+* Does working with nonce words come naturally to you? I feel like I have to embrace a creative side before I can do a task like this.
+
+### Implication of results
+
+To me, the results matter, but the implication depends on what we want the model to do. I think the results matter a lot if we are interested in:
+- low-resource or morphologically rich language support,
+- robust generation of rare or novel forms,
+- grammatical reliability under constraints,
+- faithful handling of names, loanwords, terminology, and new entities,
+- educational or linguistic applications,
+- translation into morphologically complex languages,
+- controlled generation where a specific stem or morpheme must be preserved.
+
+**If a model can generate fluent Turkish for example, how much do you think these results matter?**
+
+### Why is the task hard?
+
+I am interested to know some of the underlying reasons why this task is difficult, and I think there are some interesting interactions between tokenization, morpheme order, and length.
+* Morphological composition is probably less transparent to the model because tokens do not always match up with morphemes. **Would the task work better in a character-based LLM? How difficult is the composition aspect itself?**
+* Morpheme order seems like a clear bottleneck, since when morphemes are already given in the correct order, model performance improves. This suggests that models may know something about the pieces but struggle to assemble them in the right sequence.
+* The results related to number of morphemes seem to tell something about what the model is actually doing to try to solve the task. I think these findings suggest that models may rely on local pattern matching for short forms but lack stable compositional procedures that scale to longer words.
+* Overall, the task is hard because it requires several things at once: preserving a novel root, selecting and ordering morphemes, applying needed spelling changes, and maintaining faithfulness over longer sequences.
+
+**Do you think some change to the model setup/architecture/training could help, or is this intrinsically difficult?**
