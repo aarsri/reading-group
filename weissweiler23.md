@@ -163,10 +163,10 @@ ChatGPT (gpt-3.5-turbo-0613) seems imitate morphology quite well in certain sett
 ## Evaluating Morphological Compositional Generalization in Large Language Models
 _Ismayilzada et al._ at NAACL 2025
 
-### Core Question
+### Setup
 
-- The paper asks whether LLMs can do morphological compositional generalization.
-- In simpler terms: can models combine roots and morphemes in systematic, human-like ways, especially for novel words?
+- The paper asks whether LLMs can do morphological compositional generalization. In simpler terms: can models combine roots and morphemes in systematic, human-like ways, especially for novel words?
+- They use 5-shot prompting and focus on two highly agglutinative languages, Turkish and Finnish.
 
 ### How it relates to Weissweiler et al. (2023)
 
@@ -179,121 +179,40 @@ _Ismayilzada et al._ at NAACL 2025
 
 ### What Ismayilzada et al. (2025) does differently
 
-- It focuses on Turkish and Finnish, both highly agglutinative languages.
 - It tests two capabilities:
   - Productivity: generate a valid word from a root plus morphemes.
+    - Example: Nonce root: nisi, Morphemes: -ler, -lik, -in. Generate the correct composed form. Answer: nisiliklerin
   - Systematicity: judge whether a morpheme combination is valid.
+    - Example: choose which is correct: nisiliklerin or nisiliklerin
 - It evaluates newer multilingual LLMs, including GPT-4, Gemini-1.5, Aya-23, and Qwen-2.5.
 - It compares in-distribution real roots with out-of-distribution nonce roots.
 
 ### Main findings
 
-- LLMs still fall far below humans on morphological generalization.
-- Models struggle especially with nonce roots, supporting Weissweiler et al.’s finding that LLMs do not robustly generalize to novel word forms.
-- Models do better on systematicity than productivity, but even with systematicity the models are not consistently applying a particular rule.
-- Human performance is much more stable across real and nonce roots.
-- The paper also finds evidence of real-word bias, similar to Weissweiler et al., where models often drift toward real/frequent words rather than following the requested morphological composition.
+- **Performance**
+  - LLMs still fall far below humans on morphological generalization. Human performance is also much more stable across real and nonce roots.
+  - Models struggle especially with nonce roots, supporting Weissweiler et al.’s finding that LLMs do not robustly generalize to novel word forms.
+  - Models do better on systematicity than productivity, but even with systematicity the models are not consistently applying a particular rule.
+- **Tokenization** does not seem to be a driving factor. They compare morphologically aligned units (tokens are real morpheme pieces) vs. original tokenizer and do not see a difference in performance. At the same time, they do not do anything to tune the model to the new token sequences; the model is suddenly being asked to process inputs in a format that may not match its training distribution.
+- **Real world bias**: The paper also finds evidence of real-word bias, similar to Weissweiler et al., where models often drift toward real/frequent words rather than following the requested morphological composition.
+- **Order of morphemes**: Presenting morphemes in the correct order rather than shuffled order increases productivity task performance greatly.
+- **Number of morphemes** Performance declines sharply as morphological complexity increases.
 
-### Analysis
+### Effect of morphological complexity
 
-#### Effect of morphological complexity
+- The authors ask whether models get worse as words become morphologically longer/more complex. They measure complexity by the number of bound morphemes (1-7 morphemes for Turkish, 1-6 for Finnish).
+- In the productivity task, GPT-4’s performance drops sharply as the number of morphemes increases. For longer Turkish forms, performance falls close to zero. Humans do not show the same sharp drop.
+- In the systematicity task, Macro-F1 stays more stable, but consistency declines with complexity. This means models may judge some individual forms correctly, but become less consistent as morpheme chains get longer.
 
-- The authors ask whether models get worse as words become morphologically longer/more complex.
-- They measure complexity by the number of bound morphemes:
-  - Turkish: 1–7 morphemes
-  - Finnish: 1–6 morphemes
-- Main finding:
-  - In the productivity task, GPT-4’s performance drops sharply as the number of morphemes increases.
-  - For longer Turkish forms, performance falls close to zero.
-- Humans do not show the same sharp drop.
-- Interpretation:
-  - LLMs struggle to compose long chains of morphemes.
-  - Humans can generalize more robustly to long novel words.
-- In the systematicity task, Macro-F1 stays more stable, but consistency declines with complexity.
-- This means models may judge some individual forms correctly, but become less consistent as morpheme chains get longer.
+[include Figure 6]
 
-#### Effect of context
+### Effect of context
 
-- The authors test whether adding sentence context helps.
-- Instead of only giving root + morphemes, they give a sentence with a blank.
-- For productivity:
-  - Context helps somewhat.
-  - The model can use the sentence to guide the generated word.
-- For systematicity:
-  - Context often hurts performance, especially for smaller models and OOD nonce roots.
-- Interpretation:
-  - Context does not solve the morphology problem.
-  - In some cases, it adds extra processing burden.
-  - This is important because the contextual version is closer to ordinary language modeling, so failure there suggests the problem is not just an artifact of an artificial task. :contentReference[oaicite:1]{index=1}
+- The authors test whether adding sentence context helps. Instead of only giving root + morphemes, they give a sentence with a blank.
+- For productivity, context helps somewhat, since the model can use the sentence to guide the generated word.
+- For systematicity, context often hurts performance, especially for smaller models and OOD nonce roots.
+- Interpretation: Context does not solve the morphology problem. In some cases, it adds extra processing burden. This is important because the contextual version is closer to ordinary language modeling, so failure there suggests the problem is not just an artifact of an artificial task.
 
-#### Effect of tokenization
+## Overall Takeaways
 
-- The authors test whether poor results come from tokenization.
-- The concern:
-  - The task is based on linguistic morphemes.
-  - But LLMs process text using subword/byte-level tokens, which may not align with morphemes.
-- They compare:
-  - **morphologically aligned units**: real morpheme pieces
-  - **tokenizer-aligned units**: pieces based on the model’s own tokenizer
-- Result:
-  - Performance is very similar in both settings.
-- Interpretation:
-  - Tokenization may contribute, but it does not fully explain the failure.
-  - The deeper problem seems to be compositional morphological generalization, not just bad segmentation.
-- This also matches the earlier ChatGPT wug paper, which likewise found tokenization was not the main driver. :contentReference[oaicite:2]{index=2}
-
-#### Effect of morpheme order
-
-- In the main task, morphemes are shuffled, so the model must put them in the correct order.
-- The authors test what happens if morphemes are instead already given in the correct order.
-- Result:
-  - Performance improves across tasks and models.
-  - In productivity, the improvement can be up to about 20%.
-- Interpretation:
-  - Models partly understand the task.
-  - But they struggle to infer the correct morpheme ordering themselves.
-  - When the order is already supplied, the task becomes closer to copying or assembling.
-- This suggests a specific bottleneck:
-  - the model may know some morphemes,
-  - but lacks robust knowledge of how to compositionally order them. :contentReference[oaicite:3]{index=3}
-
-#### Effect of negative sample selection
-
-- This applies to the systematicity task.
-- The model is shown valid and invalid derived words and must judge whether each is grammatical.
-- Invalid examples are created by permuting morphemes into wrong orders.
-- The authors test three ways of choosing invalid examples:
-  - **random negatives**
-  - **language-agnostic hard negatives**, chosen by Levenshtein distance
-  - **language-specific hard negatives**, using Turkish phonological constraints
-- Result:
-  - Models perform best on random negatives.
-  - Performance drops on harder negative examples.
-- Interpretation:
-  - Random invalid forms may be too easy.
-  - Harder negatives reveal larger model weaknesses.
-  - The reported results may actually overestimate model ability, because even harder systematicity tests could expose a bigger gap from humans. :contentReference[oaicite:4]{index=4}
-
-#### Error analysis
-
-- The authors manually inspect incorrect GPT-4 outputs on Turkish productivity tasks.
-- They look at errors across both:
-  - ID real-root cases
-  - OOD nonce-root cases
-- They annotate errors for:
-  - whether the generated word is grammatically invalid,
-  - whether it ignores the task constraints,
-  - whether it hallucinates extra morphemes.
-- Main finding:
-  - On OOD nonce roots, GPT-4 often produces grammatically invalid words.
-  - On ID real roots, GPT-4 often produces grammatical words, but they are unfaithful to the requested morphemes.
-- Interpretation:
-  - With real roots, GPT-4 can drift toward familiar real words.
-  - With nonce roots, it is forced into true generalization and fails more often.
-- This supports the earlier paper’s **real-word bias** finding.
-- The authors also identify more specific failure modes:
-  - sequential dependency errors,
-  - semantic misinterpretations,
-  - lack of grammatical knowledge,
-  - unfaithful reasoning.
-- Human errors, by contrast, are mostly minor typos or missed letters in long words. :contentReference[oaicite:5]{index=5}
+### Discussion
