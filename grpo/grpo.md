@@ -132,10 +132,7 @@ This captures the main idea behind GRPO:
 The actual DeepSeekMath implementation goes one step further and normalizes rewards using the group's mean and standard deviation:
 
 $$
-\hat r_i
-=
-\frac{r_i-\text{mean}(r)}
-{\text{std}(r)}
+\hat r_i = \frac{r_i-\text{mean}(r)}{\text{std}(r)}
 $$
 
 This normalized quantity serves as the advantage signal used during optimization.
