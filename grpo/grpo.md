@@ -183,8 +183,6 @@ One of the paper's main findings is that reinforcement learning (via GRPO) conti
 Summary: GRPO can be viewed as a simplified form of PPO. The key insight is that a separate critic is not strictly necessary. Instead, multiple responses to the same prompt can be used to construct a baseline and estimate relative advantage.
 
 ### Open Questions
-
-Several questions remain open to me:
 1. If two responses are both correct, which one should be preferred? Is correctness enough? Is there a workaround to full preference-tuning?
 2. How vulnerable is GRPO to reward hacking?
 3. How much competence is required before GRPO becomes effective? Can these methods work well on a small model or a model without instruction-tuning?
