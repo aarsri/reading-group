@@ -29,7 +29,7 @@ Presented by Aarohi Srivastava on June 19, 2026.
   - negative advantage → this response was worse than expected
 - The policy is updated to make responses with higher advantage more probable.
 
-<img src="fig4.png" width="600" />
+<img src="fig4.png" width="580" />
 
 ### The problem with PPO
 
@@ -100,8 +100,6 @@ The training loop looks roughly like:
 6. Update the policy through backpropagation.
 
 The correct responses receive positive advantage relative to the group and become more likely under the policy. The incorrect responses receive negative advantage and become less likely.
-
-Unlike DPO, the model learns from its own generated responses. Unlike PPO, no critic is trained.
 
 ### Group-relative advantage
 
