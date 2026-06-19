@@ -19,10 +19,10 @@ Presented by Aarohi Srivastava on June 19, 2026.
 ### PPO recap
 
 - Recall that PPO training typically involves four components:
-  1. **Policy model**: the LLM being optimized.
-  2. **Reward model**: assigns rewards to generated responses.
-  3. **Critic**: predicts expected reward.
-  4. **Reference model**: prevents the policy from drifting too far from its initial behavior.
+  - **Policy model**: the LLM being optimized.
+  - **Reward model**: assigns rewards to generated responses.
+  - **Critic**: predicts expected reward.
+  - **Reference model**: prevents the policy from drifting too far from its initial behavior.
 - Given a prompt, the policy generates a response. The reward model assigns a reward, while the critic estimates how much reward was expected. PPO then computes an advantage $A = R - V$ where $R$ is the observed reward and $V$ is the critic's prediction.
 - Intuitively:
   - positive advantage → this response was better than expected
@@ -49,17 +49,7 @@ Suppose we ask the model the same question multiple times.
 
 The model generates four responses:
 
-A. *Real answer from GPT-5.5:*
-
-You can compute it as:
-
-$17 \times 24 = 17 \times (20 + 4)$
-
-$= (17 \times 20) + (17 \times 4)$
-
-$= 340 + 68$
-
-$= 408$
+A. *Real answer from GPT-5.5:* You can compute it as: $17 \times 24 = 17 \times (20 + 4) = (17 \times 20) + (17 \times 4) = 340 + 68 = 408$
 
 Answer: 408 ✅
 
