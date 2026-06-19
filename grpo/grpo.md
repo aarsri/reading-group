@@ -1,10 +1,10 @@
-# Group Relative Policy Optimization (GRPO)
+## Group Relative Policy Optimization (GRPO)
 
 Introduced by Shao et al. (2024) in *DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models*.
 
 Presented by Aarohi Srivastava on June 19, 2026.
 
-## If PPO already works, why GRPO?
+### If PPO already works, why GRPO?
 
 Over the past few weeks, we've discussed several approaches to LLM post-training:
 
@@ -22,7 +22,7 @@ This creates an interesting situation. DPO became popular in part because PPO-st
 
 DeepSeekMath asks: Do we really need every component of PPO for reasoning tasks? To this end, the paper introduces **Group Relative Policy Optimization (GRPO)**, a PPO variant that removes the critic (value model) and instead estimates advantage by comparing responses within a group.
 
-## PPO recap
+### PPO recap
 
 Recall that PPO training typically involves four components:
 
@@ -39,10 +39,9 @@ Intuitively:
 
 The policy is updated to make responses with higher advantage more probable.
 
-[INSERT FIGURE 4]
-*Figure 4 from DeepSeekMath compares the PPO and GRPO training pipelines.*
+<img src="fig4.png" width="350" />
 
-## The problem with PPO
+### The problem with PPO
 
 PPO works well, but it comes with a cost. The critic must be trained alongside the policy. In practice, this means maintaining and updating another large model during training.
 
@@ -54,7 +53,7 @@ This introduces several challenges:
 
 GRPO asks whether we can estimate advantage without training a separate critic.
 
-## The core idea behind GRPO
+### The core idea behind GRPO
 
 Suppose we ask the model the same question multiple times.
 
@@ -102,7 +101,7 @@ Either way, in the absence of a critic we no longer ask: Was response A better t
 
 *Keep in mind that the reward model is supervised by preference rankings but not numerical reward scores. These numbers are internal; whether they are on a scale of [0, 1] or [-15, -5] does not matter. For readability we will assume the range is normalized to [0, 1].
 
-## What actually happens during training?
+### What actually happens during training?
 
 The training loop looks roughly like:
 
@@ -117,7 +116,7 @@ The correct responses receive positive advantage relative to the group and becom
 
 Unlike DPO, the model learns from its own generated responses. Unlike PPO, no critic is trained.
 
-## Group-relative advantage
+### Group-relative advantage
 
 The intuition is: $A_i = R_i - \text{group average reward}$
 
@@ -139,7 +138,7 @@ $$
 
 This normalized quantity serves as the advantage signal used during optimization.
 
-### A worked example
+#### Example
 
 Suppose the model generates four responses with rewards:
 
@@ -165,19 +164,19 @@ GRPO therefore increases the probability of A and B while decreasing the probabi
 
 The key idea is that no critic was needed to determine which responses were above or below expectation. The group itself provides the baseline.
 
-## Why is GRPO particularly useful for reasoning?
+### Why is GRPO particularly useful for reasoning?
 
 GRPO works best when rewards can be computed automatically. In math, $\text{correct answer} \rightarrow 1$ and $\text{incorrect answer} \rightarrow 0$. In coding, rewards may be based on unit tests passed, execution success, benchmark scores. 
 
 Notably, the reward function does **not** need to capture every aspect of response quality. In many reasoning settings, the model is rewarded only for correctness. In fact, recent reasoning work in reinforcement learning finds that improving correctness often improves reasoning quality as well. By repeatedly reinforcing successful trajectories, the model gradually shifts toward more effective reasoning patterns.
 
-## Reward model
+### Reward model
 
 GRPO removes the **critic**, not the reward model. If the reward is based on preference and not just objective measures, it is still a large model. The reward signal can come from multiple sources:
 * Learned reward models: As in RLHF, humans can rank responses and train a reward model (Response A > Response B). The reward model learns to assign higher scores to preferred responses.
 * Automatic rewards: Objective measures like exact answer correctness, symbolic verification, unit-test pass rate computed automatically without a neural model. This is the setting emphasized by DeepSeekMath, and in this case, we will see a real saving in compute compared to PPO because the policy LLM is the only large model.
 
-## Assumptions behind GRPO
+### Assumptions behind GRPO
 
 GRPO makes several assumptions.
 
@@ -187,7 +186,7 @@ GRPO makes several assumptions.
 
 3. The reward function is meaningful: GRPO can only optimize what the reward function measures. If the reward function is flawed, the model may learn undesirable behaviors.
 
-## DeepSeekMath
+### DeepSeekMath
 
 The DeepSeekMath paper is about more than GRPO. Its contributions include:
 1. A large mathematical corpus.
@@ -198,9 +197,9 @@ The choice of math is important because rewards can be computed automatically. T
 
 One of the paper's main findings is that reinforcement learning (via GRPO) continues to improve performance even after instruction tuning has already been performed (via SFT).
 
-[INSERT RESULTS TABLE]
+<img src="tab5.png" width="350" />
 
-## How does GRPO compare to PPO and DPO?
+### How does GRPO compare to PPO and DPO?
 
 | Method | Reward Model | Critic | RL | LLM Generation |
 |----------|----------|----------|----------|----------|
@@ -210,7 +209,7 @@ One of the paper's main findings is that reinforcement learning (via GRPO) conti
 
 Summary: GRPO can be viewed as a simplified form of PPO. The key insight is that a separate critic is not strictly necessary. Instead, multiple responses to the same prompt can be used to construct a baseline and estimate relative advantage.
 
-## Open Questions
+### Open Questions
 
 Several questions remain open to me.
 
