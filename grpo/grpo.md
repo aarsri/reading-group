@@ -1,8 +1,8 @@
 ## Group Relative Policy Optimization (GRPO)
 
-Introduced by Shao et al. (2024) in *DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models*.
+Introduced by Shao et al. (2024) in *DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models*
 
-Presented by Aarohi Srivastava on June 19, 2026.
+Presented by Aarohi Srivastava on June 19, 2026
 
 ### If PPO already works, why GRPO?
 
@@ -154,13 +154,7 @@ The DeepSeekMath paper is about more than GRPO. Its contributions include:
 2. DeepSeekMath base and instruction-tuned models.
 3. GRPO as a reinforcement learning method for mathematical reasoning.
 
-The choice of math is important because rewards can be computed automatically. This allows large-scale reinforcement learning without requiring human annotators to rank every generated response.
-
 One of the paper's main findings is that reinforcement learning (via GRPO) continues to improve performance even after instruction tuning has already been performed (via SFT).
-
-<img src="tab5.png" width="450" />
-
-### How does GRPO compare to PPO and DPO?
 
 | Method | Reward Model | Critic | RL | LLM Generation |
 |----------|----------|----------|----------|----------|
@@ -168,9 +162,11 @@ One of the paper's main findings is that reinforcement learning (via GRPO) conti
 | DPO | ✗ | ✗ | ✗ | ✗ |
 | GRPO | ~ | ✗ | ✓ | ✓ |
 
-Summary: GRPO can be viewed as a simplified form of PPO. The key insight is that a separate critic is not strictly necessary. Instead, multiple responses to the same prompt can be used to construct a baseline and estimate relative advantage.
+**Summary:** GRPO can be viewed as a simplified form of PPO. The key insight is that a separate critic is not strictly necessary. Instead, multiple responses to the same prompt can be used to construct a baseline and estimate relative advantage.
 
 ### Open Questions
 1. If two responses are both correct, which one should be preferred? Is correctness enough? Is there a workaround to full preference-tuning?
 2. How vulnerable is GRPO to reward hacking?
 3. How much competence is required before GRPO becomes effective? Can these methods work well on a small model or a model without instruction-tuning?
+
+<img src="tab5.png" width="450" />
