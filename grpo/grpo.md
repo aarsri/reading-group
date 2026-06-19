@@ -39,7 +39,7 @@ Intuitively:
 
 The policy is updated to make responses with higher advantage more probable.
 
-<img src="fig4.png" width="350" />
+<img src="fig4.png" width="600" />
 
 ### The problem with PPO
 
@@ -197,7 +197,7 @@ The choice of math is important because rewards can be computed automatically. T
 
 One of the paper's main findings is that reinforcement learning (via GRPO) continues to improve performance even after instruction tuning has already been performed (via SFT).
 
-<img src="tab5.png" width="350" />
+<img src="tab5.png" width="450" />
 
 ### How does GRPO compare to PPO and DPO?
 
