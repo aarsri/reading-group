@@ -100,9 +100,7 @@ The correct responses receive positive advantage relative to the group and becom
 - For the first example above, the average reward is $\mu = 0.5$. Responses A and B receive $1.0 - 0.5 = 0.5$ advantage, while responses C and D receive $0.0 - 0.5 = -0.5$ advantage.
 - The actual DeepSeekMath implementation goes one step further and normalizes rewards using the group's mean and standard deviation. This normalized quantity serves as the advantage signal used during optimization.
 
-```math
-\hat r_i = \frac{r_i-\text{mean}(r)}{\text{std}(r)}
-```
+<img src="equation.png" width="160" />
 
 #### Example
 
