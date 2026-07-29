@@ -48,4 +48,30 @@ After CPT, the models are instruction-tuned on UltraFeedback, an existing datase
   * One consequence is that the explicit SFT stage teaches the model to generate synthetic realizations of morphosyntactic and lexical dialect features, while the earlier continual pre-training exposes it to naturally occurring dialect text. The paper does not investigate how these two sources of supervision interact, for example, whether synthetic SFT reinforces the richer dialect competence learned during CPT or instead narrows it toward the specific feature inventory represented by Multi-VALUE.
 
 ### Post-Training via DPO, GRPO, or GSPO
-These methods are used to encourage dialectal generation, usually through preference optimization.
+After SFT, the authors compare three popular post-training methods: DPO, GRPO, and GSPO. All three aim to increase dialectal generation, but they optimize the model in very different ways. These methods are used to encourage dialectal generation, usually through preference optimization.
+
+#### Direct Preference Optimization (DPO)
+* Rather than generating new responses during training, DPO learns from preference pairs already present in the dataset.
+* For this paper, the preference pairs are constructed by taking a standard UltraFeedback response and its Multi-VALUE-transformed dialectal version. The dialectal response is treated as the chosen response and the original standard English response as the rejected response.
+* The goal is to increase the probability of the dialect version compared to the standard version.
+* For the two training pipelines:
+  * Implicit: preference pairs from all three target dialects are pooled together.
+  * Explicit: preference pairs are constructed only for the target dialect (so you'll have separate models for each target).
+
+#### Group Relative Policy Optimization (GRPO)
+GRPO generates multiple candidate responses. For each prompt:
+1. The model samples four candidate responses.
+2. Each response receives a numerical reward.
+3. Rewards are normalized relative to the other responses from that prompt.
+4. The policy is updated to increase the probability of higher-reward responses.
+
+#### Group Sequence Policy Optimization (GSPO)
+GSPO is conducted very similarly to GRPO, except for the policy update. GRPO assigns credit at the token level, while GSPO performs sequence-level optimization, treating the entire generated response as the unit being optimized. Since dialect is largely a property of the response as a whole rather than individual tokens, the authors hypothesize that this may produce more natural dialectal generations.
+
+#### Reward Function for GRPO and GSPO
+
+
+## Evaluation
+
+## Discussion
+
