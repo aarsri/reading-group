@@ -69,7 +69,19 @@ GRPO generates multiple candidate responses. For each prompt:
 GSPO is conducted very similarly to GRPO, except for the policy update. GRPO assigns credit at the token level, while GSPO performs sequence-level optimization, treating the entire generated response as the unit being optimized. Since dialect is largely a property of the response as a whole rather than individual tokens, the authors hypothesize that this may produce more natural dialectal generations.
 
 #### Reward Function for GRPO and GSPO
+GRPO and GSPO optimize the following composite reward:
+R = 0.8\phi_{\text{dialect}} + 0.1\phi_{\text{COMET}} + 0.1\phi_{\text{cosine}}
 
+The reward consists of three components:
+* Dialect score (80%) measures how strongly the generated response exhibits dialectal features (from eWAVE).
+* COMET (10%) measures semantic similarity to the reference SFT response.
+* Sentence embedding cosine similarity (10%) provides an additional semantic preservation signal.
+
+Dialect Score:
+* The large weight on the dialect score reflects the paper’s primary objective: encouraging dialectal generation while preserving the meaning of the original response.
+* The dialect score is computed using a BERT-based multi-label classifier trained to recognize the 135 eWAVE-derived dialect features.
+* The implicit pipeline rewards all 135 features, while the explicit pipeline only rewards features associated with the target dialect.
+* This measures detectable dialect features, not whether a response would sound authentic to speakers of that dialect. Fluency, pragmatics, register, and cultural appropriateness are not directly optimized.
 
 ## Evaluation
 
