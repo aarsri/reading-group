@@ -15,7 +15,7 @@ The overall pipeline has three stages:
 2. supervised fine-tuning (SFT)
 3. post-training (DPO, GRPO, or GSPO)
 
-[Include Figure 1]
+<img src="Figure1.png" width="300" />
 
 These stages are useful for bringing about dialect robustness and generation capabilities, and the authors are able to measure performance after each stage to understand how robustness and generation ability change with each step.
 
@@ -94,12 +94,11 @@ The reward consists of three components:
   2. human pairwise preference judgments
   3. Phi-4 as an LLM judge
 
-[Insert Table 2 (example generations)]
-
-[Insert Table 3 (human + Phi-4 evaluation)]
+<img src="Table2.png" width="700" />
+<img src="Table3.png" width="280" />
 
 ## Results
-[Insert Table 1]
+<img src="Table1.png" width="650" />
 
 ### 1. Robustness and generation are influenced by different stages of training.
 * The authors evaluate checkpoints throughout the training pipeline (base → CPT → SFT → alignment).
@@ -129,7 +128,7 @@ The reward consists of three components:
 
 ## Discussion
 I was left thinking about a few questions while reading the paper:
-1. CPT on natural dialects vs. post-training on synthetic dialects
+1. How might CPT on natural dialects and post-training on synthetic dialects interact?
 2. What makes dialect text sound authentic? Would Multi-VALUE (only morphosyntactic and lexical features) provide enough dialect-like features to bring about good quality dialectal generation?
 3. To me, it seems like GRPO was prone to reward hacking here as including more feature from eWAVE would be an easy shortcut (even if the end result is not dialect-sounding). What alternatives could there be?
 4. What is the role of dialect generation? While understanding a user's dialect feels like a fairness objective, generating in that dialect is a different design question. Should models automatically respond in the user's dialect (what this paper seems to suggest), or should this be an explicit user preference? When does accommodation feel natural, and when might it become stereotyped or performative?
