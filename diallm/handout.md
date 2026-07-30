@@ -15,6 +15,8 @@ The overall pipeline has three stages:
 2. supervised fine-tuning (SFT)
 3. post-training (DPO, GRPO, or GSPO)
 
+[Include Figure 1]
+
 These stages are useful for bringing about dialect robustness and generation capabilities, and the authors are able to measure performance after each stage to understand how robustness and generation ability change with each step.
 
 ### Models
@@ -86,14 +88,44 @@ The reward consists of three components:
 ## Evaluation
 * The authors evaluate both dialect robustness and dialect generation, emphasizing that these are different capabilities.
 * Robustness is evaluated using downstream NLP benchmarks rather than representation probing. These include GLUE, VALUE, BESSTIE sentiment and sarcasm, DialectBench, BBH, and GPQA.
-* Generation is evaluated using open-ended prompts like “What’s the best piece of advice someone’s ever given you?” and “What’s your take on people who are always late?” There is no objectively correct answer. Instead, the goal is to determine whether the generated response is recognizably Australian English, Indian English, or Northern British English (the three target dialects).
+* Generation is evaluated separately using 25 open-ended prompts (e.g., "What's the best piece of advice someone's ever given you?"). There is no objectively correct answer. Instead, the goal is to determine whether the generated response is recognizably Australian English, Indian English, or Northern British English (the three target dialects).
 * The authors evaluate generation in three ways:
   1. automatic dialect classification
   2. human pairwise preference judgments
   3. Phi-4 as an LLM judge
 
-## Results
+[Insert Table 2 (example generations)]
 
+[Insert Table 3 (human + Phi-4 evaluation)]
+
+## Results
+[Insert Table 1]
+
+### 1. Robustness and generation are influenced by different stages of training.
+* The authors evaluate checkpoints throughout the training pipeline (base → CPT → SFT → alignment).
+* They find that CPT often degrades downstream benchmark performance, SFT recovers most of that performance, and alignment after all that only produces small and inconsistent benchmark changes.
+* In contrast, dialectal generation changes much more noticeably after explicit SFT and post-training.
+* This is the central claim of the paper: robustness benchmarks do not fully capture what alignment is doing.
+* To me, this suggests that robustness and generation should be thought of as more separate rather than assuming one implies the other.
+
+### 2. Explicit adaptation produces better dialect generation.
+* Humans and LLM-as-judge consistently preferred outputs from the explicit pipeline over the implicit pipeline.
+  * Humans preferred explicit adaptation 71% of the time for Indian English and 85% of the time for Northern British English.
+  * Phi-4 preferred explicit adaptation 100% of the time for all three dialects.
+  * Australian English was the exception, with weaker human preference (34%) for the explicit pipeline. The authors speculate that Australian English markers are generally more subtle and therefore harder for annotators to perceive.
+
+#### 3. Optimizing the reward is not the same as producing better dialect.
+* GRPO consistently maximizes the dialect reward and achieves the highest eWAVE feature density during training. However, it is generally *not* the method preferred by humans. Instead:
+ * DPO is preferred for Indian and Northern British English.
+ * GSPO performs best for Australian English.
+ * GRPO is never the clear winner despite optimizing the reward most aggressively.
+* The paper also reports that independent linguistic analysis finds that GRPO often produces fewer recognizable surface dialect markers and lower feature diversity than DPO, particularly for the Llama and Qwen models.
+* This suggests that the reward is measuring something closer to classifier-detectable dialect features than overall dialect authenticity.
+
+#### 4. LLM-as-a-judge mostly agrees, but not always.
+* Phi-4 generally recovered the same broad ranking as human annotators, particularly when comparing implicit versus explicit pipelines.
+* However, providing Phi-4 with the eWAVE feature inventory noticeably changed its judgments. For example, comparing implicit vs. explicit SFT, Phi-4 became substantially more likely to prefer the dialect model (explicit) once it was given the feature list.
+* This suggests that LLM judges may become more sensitive to explicit grammatical markers when provided with linguistic guidance, rather than judging dialect exactly as humans do.
 
 ## Discussion
 I was left thinking about a few questions while reading the paper:
