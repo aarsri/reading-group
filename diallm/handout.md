@@ -72,7 +72,7 @@ GSPO is conducted very similarly to GRPO, except for the policy update. GRPO ass
 
 ### Reward Function for GRPO and GSPO
 GRPO and GSPO optimize the following composite reward:
-R = 0.8\phi_{\text{dialect}} + 0.1\phi_{\text{COMET}} + 0.1\phi_{\text{cosine}}
+$$R = 0.8\phi_{\text{dialect}} + 0.1\phi_{\text{COMET}} + 0.1\phi_{\text{cosine}}$$
 
 The reward consists of three components:
 * Dialect score (80%) measures how strongly the generated response exhibits dialectal features (from eWAVE).
