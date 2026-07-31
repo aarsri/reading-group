@@ -97,17 +97,17 @@ The reward consists of three components:
 <img src="Table2.png" width="700" />
 <img src="Table3.png" width="280" />
 
-## Results
+### Results
 <img src="Table1.png" width="650" />
 
-### 1. Robustness and generation are influenced by different stages of training.
+#### 1. Robustness and generation are influenced by different stages of training.
 * The authors evaluate checkpoints throughout the training pipeline (base → CPT → SFT → alignment).
 * They find that CPT often degrades downstream benchmark performance, SFT recovers most of that performance, and alignment after all that only produces small and inconsistent benchmark changes.
 * In contrast, dialectal generation changes much more noticeably after explicit SFT and post-training.
 * This is the central claim of the paper: robustness benchmarks do not fully capture what alignment is doing.
 * To me, this suggests that robustness and generation should be thought of as more separate rather than assuming one implies the other.
 
-### 2. Explicit adaptation produces better dialect generation.
+#### 2. Explicit adaptation produces better dialect generation.
 * Humans and LLM-as-judge consistently preferred outputs from the explicit pipeline over the implicit pipeline.
   * Humans preferred explicit adaptation 71% of the time for Indian English and 85% of the time for Northern British English.
   * Phi-4 preferred explicit adaptation 100% of the time for all three dialects.
