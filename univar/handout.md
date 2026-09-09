@@ -6,583 +6,505 @@ _Presented by Aarohi Srivastava on 9/11/26_
 
 ## Motivation
 
--   LLM alignment work usually asks how to *put* values into a model.
-    This paper asks a complementary question: **once a model has been
-    trained, how can we characterize the values it actually expresses?**
--   A common approach is to administer an existing human-values survey
-    to an LLM and report its position along the survey's predefined
-    dimensions.
-    -   Examples include Hofstede's cultural dimensions (6 dimensions),
-        the World Values Survey (10 dimensions in the framing used
-        here), and Schwartz-style value taxonomies.
-    -   This is interpretable, but it also constrains the analysis to
-        whatever axes the survey designers decided in advance.
--   The paper's central proposal is **UniVaR (Universal Value
-    Representation)**: instead of representing an LLM with a small
-    hand-designed vector of survey scores, learn a high-dimensional
-    embedding from many value-relevant model responses.
--   The intended analogy is to ordinary representation learning:
-    -   a sentence embedding tries to retain information about sentence
-        meaning while ignoring irrelevant surface details;
-    -   UniVaR tries to retain information about a model's **value
-        tendencies** while ignoring things like wording, syntax,
-        model-specific style, and the language in which the answer was
-        originally produced.
--   Importantly, UniVaR is **not supposed to tell us whether a model's
-    values are good or bad**. It is a measurement/representation tool:
-    models (or model-language combinations) that express similar value
-    tendencies should be close in the embedding space.
+-   LLM alignment methods such as RLHF, DPO, safety tuning, etc. are
+    intended to shape model behavior according to human preferences and
+    values. But after training, **how do we characterize what values a
+    model actually expresses?**
+-   One option is to give the model an existing human-values survey and
+    score it on the survey's predefined axes.
+    -   Hofstede, for example, represents cultures with 6 dimensions;
+        Schwartz's theory has 19; the World Values Survey is often
+        summarized using a relatively small set of dimensions.
+    -   This is interpretable, but we only learn about distinctions that
+        the survey designers chose in advance.
+-   The paper proposes **UniVaR (Universal Value Representation)**:
+    learn a much higher-dimensional embedding from how LLMs answer many
+    value-related questions.
+-   The basic idea is similar to other embeddings:
+    -   GloVe maps words to vectors so words used similarly end up
+        nearby.
+    -   A sentence embedding model maps sentences to vectors so
+        semantically similar sentences end up nearby.
+    -   **UniVaR is an embedding model trained so that sets of answers
+        expressing similar LLM value behavior end up nearby.**
+-   UniVaR is therefore **not a new LLM and does not modify the LLM
+    being studied**. It is a separate, fixed encoder that is trained
+    once and can then be used to embed value-related responses from
+    other LLMs, including models it never saw during training.
 
-> **Figure to print: Figure 1.** This is probably the best result figure
-> to have in color. It gives the intuitive payoff of the whole method
-> before getting into how the representation is learned.
+### What does a UniVaR representation actually look like?
 
-## What exactly is being represented?
+Suppose we want to compare Model A and Model B. We ask both models
+questions such as:
 
-The paper conceptually decomposes the factors governing an LLM's
-behavior into
+-   Is individual success more important than the welfare of the
+    community?
+-   Should someone prioritize personal well-being over societal
+    expectations?
+-   How important is it to preserve cultural traditions?
 
-$$
-\theta = \phi(\vartheta_{\text{value}}, \vartheta_{\text{other}})
-$$
+Model A's answers might consistently emphasize personal choice and
+autonomy, while Model B's emphasize social obligation and harmony.
 
-where:
+We then give each model's question-answer pairs to **the same UniVaR
+encoder**. UniVaR converts them into vectors. If the learned
+representation is meaningful, Model A's value-related answers should
+occupy one region of the space and Model B's another.
 
--   $\vartheta_{\text{value}}$ = latent factors that affect
-    value-relevant decisions;
--   $\vartheta_{\text{other}}$ = everything else that affects an answer,
-    such as linguistic style, syntax, general knowledge, reasoning
-    ability, etc.
+This is much closer to using a pretrained sentence embedding model than
+to fine-tuning a separate UniVaR for every LLM: **after UniVaR has been
+trained, the encoder is static and can be applied to outputs from a new
+model.**
 
-We obviously cannot literally invert a neural network and isolate
-$\vartheta_{\text{value}}$. This would also be impossible for closed
-models whose parameters are unavailable.
+The harder question is what the distances in this space *mean*. The
+dimensions are not labeled "individualism," "tradition," etc.; the paper
+has to provide empirical evidence that proximity is actually capturing
+value-related behavior rather than model style, translation artifacts,
+or something else.
 
-Instead, UniVaR learns a representation $Z$ intended to contain
-information about $\vartheta_{\text{value}}$ while discarding as much
-irrelevant information as possible:
+> **Figure to print: Figure 1** is useful here as a preview of the
+> learned space, although I would explain how it is constructed before
+> interpreting the clusters.
 
-$$
-\max_Z I(\vartheta_{\text{value}}; Z) - H(Z).
-$$
+## How should we think about "extracting values" from an LLM?
 
-The equation is mainly a statement of intent rather than something they
-can optimize directly, because $\vartheta_{\text{value}}$ is unobserved.
-The practical question becomes: **what observable data should contain
-information about a model's values, and what learning signal can
-separate that information from nuisance factors?**
+The paper begins with a **conceptual model, not something they directly
+implement**.
 
-## Step 1: Elicit values through questions
+Imagine that an LLM's response behavior comes from many different
+factors. Some affect value judgments --- e.g., whether the model tends
+to favor individual freedom versus collective responsibility --- while
+others affect things like wording, syntax, knowledge, or writing style.
 
--   Not every model output tells us much about values.
-    -   "What is $17 \times 24$?" mostly probes knowledge/reasoning.
-    -   A question about whether individual freedom should outweigh a
-        public-health obligation plausibly depends much more on value
-        judgments.
--   The authors therefore construct a large collection of
-    **value-eliciting questions**.
--   They begin with **87 reference values** collected from five
-    established families of human-value research, including the World
-    Values Survey, Hofstede, Schwartz's value theories, and the Rokeach
-    Value Survey.
-    -   The 87 values are used to obtain broad coverage; they are **not
-        the dimensions of the final UniVaR embedding**.
-    -   This distinction matters. UniVaR is advertised as escaping a
-        small fixed taxonomy, but the training questions are still
-        seeded from existing taxonomies. The method is therefore less
-        constrained than reporting 6 or 10 survey scores, but it is not
-        taxonomy-free.
--   An LLM generates 50 candidate questions for each reference value.
-    After manual filtering, the authors retain **4,296 questions**.
--   Each is paraphrased four times, giving **21,480 English questions**.
--   These are translated into **25 languages**, asked to the LLMs, and
-    the resulting question-answer pairs are translated **back into
-    English** before representation learning.
--   Overall, the training pipeline produces roughly **1 million QA
-    pairs**.
+Ideally, we would like a representation that captures the first category
+while ignoring the second.
 
-### Why translate everything back to English?
+The authors formalize these as latent **value-related factors** and
+**other factors** inside an LLM. This is mainly a way of stating the
+goal: these factors are not known variables or identifiable groups of
+parameters that the authors locate inside the network. They explicitly
+point out that we do not know how value-related behavior is encoded
+among billions of parameters, and for closed models we do not have the
+parameters anyway.
 
-Suppose a Chinese answer and an English answer end up far apart in the
-embedding. Without normalization, we would not know whether the distance
-reflects:
+**What they actually do instead:** observe the model's behavior. They
+ask many questions designed to make value preferences relevant to the
+answer, then train a separate embedding model to capture the patterns
+that are consistent across those answers.
 
-1.  different values, or
-2.  the trivial fact that one response is Chinese and the other is
-    English.
+So the logic is:
 
-Back-translation is an attempt to remove (2), so that the representation
-cannot simply use language identity as a shortcut.
+**latent values are inaccessible → value-sensitive behavior is
+observable → learn a representation from that behavior.**
 
-This creates a methodological tradeoff: translation removes an obvious
-linguistic confound, but it can also introduce **translationese** or
-erase culturally meaningful distinctions that are expressed through
-language. The authors explicitly test the first problem later.
+## Where do the value questions come from?
 
-> **Figure to print: Figure 3.** Useful if the group will want the full
-> data-generation pipeline. Otherwise Figure 2 is the more important
-> methods figure.
+The quality of the representation depends heavily on what questions we
+decide are "value-eliciting."
 
-## A "value identity" is a model-language pair
+The authors start with **87 reference values drawn from several
+established human-value frameworks**, including the World Values Survey,
+Hofstede/cultural-dimensions work, Schwartz's value theories, and the
+Rokeach Value Survey.
 
-One of the most important choices in the paper is that the authors **do
-not assume a model has one fixed value system independent of language**.
+These are fairly broad concepts rather than 87 highly specific moral
+rules. Examples given in the paper include:
 
-For example:
+  -----------------------------------------------------------------------
+  Reference value                     Roughly what it probes
+  ----------------------------------- -----------------------------------
+  Individualism vs. Collectivism      independence/personal goals
+                                      vs. interdependence/group goals
 
--   ChatGPT answering in English = one value identity;
--   ChatGPT answering in Chinese = another value identity.
+  Harmony vs. Mastery                 fitting into/harmonizing with the
+                                      world vs. actively
+                                      changing/mastering it
 
-Across the models/languages that are supported, this produces **127
-distinct model-language pairs**.
+  Performance vs. Humane Orientation  achievement/performance
+                                      vs. compassion and concern for
+                                      others
 
-The motivation is empirical work showing that multilingual LLM behavior
-can change with prompting language. Conceptually, this means UniVaR
-represents **values as expressed under a particular linguistic
-context**, rather than claiming to recover one immutable set of values
-stored inside the model.
+  Affective Autonomy                  freedom to pursue personally
+                                      rewarding experiences and desires
+  -----------------------------------------------------------------------
 
-This distinction is useful when interpreting the paper's later claim
-that language clusters correspond to cultures: the evidence is about
-**behavior elicited through languages**, not direct access to an
-internal cultural identity.
+For each reference value, the authors first use GPT-4 to generate
+situations and then Mixtral to turn them into many concrete questions.
+For **Individualism vs. Collectivism**, examples include whether one
+prioritizes independence or interdependent relationships and whether
+credit for a successful outcome should be shared or taken individually.
+For **Affective Autonomy**, one example asks whether protecting one's
+mental well-being should take precedence over meeting societal
+expectations.
 
-## Step 2: Multi-view learning
+This distinction is important:
 
-A single value question is noisy. An answer might reveal the model's
-stance on one issue, but it cannot characterize its broader value
-distribution.
+-   the **87 values are seeds used to generate a broad set of
+    situations/questions**;
+-   UniVaR does **not** ultimately output an 87-dimensional vector with
+    one score for each value.
 
-So the input to UniVaR is a **view**: a randomly sampled set of
-$\lambda$ value-eliciting QA pairs from the same model-language
-identity.
+After filtering, they retain **4,296 distinct English questions**. Each
+is paraphrased four times, giving **21,480 formulations**. They
+translate the questions into the languages supported by each LLM,
+collect answers, and translate the QA pairs back into English.
 
-During training:
+The final training set contains roughly **1 million QA pairs**.
 
-1.  Sample two different sets of QA pairs, $X_1$ and $X_2$, from the
-    **same model-language pair**.
-2.  Encode both using the same encoder $g$: $$
-    Z_{X_1}=g(X_1), \qquad Z_{X_2}=g(X_2).
-    $$
-3.  Train the representations of these two views to be similar.
-4.  Representations from different model-language identities serve as
-    negatives.
+### Why paraphrase and translate back to English?
 
-The encoder is initialized from **Nomic Embed v1 (137M parameters)**,
-and the paper uses an **InfoNCE contrastive loss**.
+Paraphrasing makes it harder for UniVaR to associate a value with one
+particular wording.
 
-### Why should this isolate values?
+Back-translation has a different purpose. Suppose responses originally
+produced in Japanese cluster together. If UniVaR actually receives
+Japanese text, that result is uninteresting: it could simply recognize
+the language. By translating all QA pairs back to English, the authors
+try to force the representation to rely on **differences in what the
+models say**, rather than the language's vocabulary or script.
 
-The key assumption is that two randomly sampled sets of value questions
-from the same model-language pair share the underlying value tendencies,
-but do **not** necessarily share the same topic, exact wording, or
-individual answers.
+This introduces another possible confound --- translated English may
+retain clues about its source language ("translationese") --- which the
+authors test later.
 
-Therefore, the easiest information that is consistently useful for
-matching arbitrary views should be information stable across many
-value-eliciting responses from that model-language pair.
+> **Figure 3** is useful if we want the data-generation pipeline visible
+> during discussion.
 
-This is the same general logic behind contrastive/multi-view
-representation learning: construct two observations that share the
-factor you care about while varying nuisance factors, then train the
-model to recover what is common.
+## Models: what variation are they trying to capture?
 
-There is an important caveat: **anything else that is stable within a
-model-language pair can also become useful for the contrastive task**.
-Model-specific prose style, refusal behavior, translation artifacts, or
-recurring lexical choices could all be shortcuts. This is why the
-paper's confounder tests are not optional side analyses; they are
-necessary evidence for the central interpretation of the embedding.
+The study covers **15 chat/instruction-following LLMs and 25
+languages**, producing 127 supported model-language combinations.
 
-> **Figure to print: Figure 2.** I would definitely include this one.
-> The right side makes the multi-view idea much easier to explain than
-> the equations alone.
+The models are deliberately heterogeneous. They include:
 
-## Training vs. evaluation
+-   general multilingual models such as **Aya 101**;
+-   region/language-focused models such as **SeaLLM**, **ChatGLM-3**,
+    and **JAIS**;
+-   widely used general-purpose families such as **Mistral/Mixtral,
+    Llama, Yi, and ChatGPT**;
+-   models with different post-training histories, including
+    preference-tuned models and models the paper does not mark as
+    preference-tuned.
 
--   The authors study **15 LLMs** total.
--   QA outputs from **8 LLMs** are used to train UniVaR.
--   The remaining **7 LLMs are unseen during UniVaR training**, which is
-    important: the representation is intended to generalize beyond the
-    particular generators it was trained on.
--   Evaluation questions also come from sources not directly used to
-    create the training questions:
-    -   PVQ-RR
-    -   World Values Survey
-    -   GLOBE
-    -   ValuePrism
--   These sources are converted into natural questions, translated into
-    the target languages, answered by the LLMs, and translated back to
-    English.
+This variation is useful because we have plausible reasons for some
+models to differ: their training data, intended language coverage,
+developers, and post-training procedures are not identical.
 
-So the strongest evaluation is not "can the embedding remember the
-training questions?" It asks whether a learned notion of model-language
-value identity transfers to **new value questions and unseen models**.
+### The 8 training models vs. 7 unseen models
+
+**Used to train UniVaR:**\
+Mixtral Instruct, Aya 101, SeaLLM, BLOOMZ-RLHF, ChatGLM-3, Nous Hermes
+Mixtral, SOLAR Instruct, and Mistral Instruct.
+
+**Not used to train UniVaR:**\
+JAIS Chat, Yi Chat, Llama 2 Chat, Maral, Command-R, Llama 3, and
+ChatGPT.
+
+This is meaningful because UniVaR never sees outputs from those seven
+models while learning its embedding space. It can later encode their
+answers because it consumes **textual QA pairs, not model parameters**.
+
+The two sides are not completely unrelated populations: they contain
+broadly similar modern instruction/chat LLMs, and some
+architectures/families in the overall set are related. The training side
+itself also contains especially close relatives --- Mixtral Instruct and
+Nous Hermes Mixtral, for example. However, the held-out set includes
+genuinely different model families and organizations.
+
+A useful interpretation is: **does a value-sensitive text representation
+learned from one collection of LLM outputs remain useful when we feed it
+outputs from new LLMs?**
+
+## A model in different languages counts as different "value identities"
+
+The paper does not assume that ChatGPT has one value representation
+regardless of language.
+
+Instead:
+
+-   ChatGPT answering in English = one value identity
+-   ChatGPT answering in Chinese = another
+-   Aya answering in English = another
+-   Aya answering in Chinese = another
+
+This choice is based on previous evidence that LLM behavior changes with
+prompting language.
+
+It also means that one of the paper's central questions is built into
+the setup from the beginning: **how much does the expressed value
+behavior of the same model change when we interact with it in another
+language?**
+
+## How UniVaR is trained: multi-view learning
+
+The high-level problem is that **one answer tells us very little about a
+model's overall values**.
+
+Imagine randomly taking several value-related answers from
+ChatGPT-in-English. Call that one sample. Then independently take
+several *different* value-related answers from ChatGPT-in-English. Call
+that another sample.
+
+Although the questions differ, both samples come from the same model in
+the same language. The authors train UniVaR to place these two samples
+near each other.
+
+At the same time, a sample from a different model-language combination
+--- for example ChatGPT-in-Chinese or Aya-in-English --- is encouraged
+to be farther away.
+
+Repeated over many questions and model-language combinations, the hope
+is that the encoder learns the patterns that are **consistent across
+many different value judgments from the same source**, rather than
+memorizing the content of one question.
+
+This is **multi-view learning**: show the model different "views" of the
+same underlying thing and train it to recognize what they have in
+common.
+
+### Two implementation terms in the paper
+
+-   **Nomic Embed v1** is the pretrained text-embedding model they start
+    from. Rather than training an encoder from scratch, they take an
+    existing model that already turns text into useful vectors and
+    fine-tune it for this specialized task.
+-   **InfoNCE** is the contrastive training objective. Intuitively:
+    *pull matching views together in embedding space and push
+    non-matching views apart.*
+
+Neither is the conceptual contribution; they are standard tools used to
+implement the value-representation idea.
+
+> **Figure 2** is probably the single best methods figure to print.
+
+## Why might this capture values?
+
+Because the matched samples contain **different questions and answers**,
+exact topic and wording are unreliable ways to recognize the pair. What
+should be more consistent is the model-language combination's broader
+pattern of responses across value questions.
+
+But model style, refusal tendencies, or translation artifacts could also
+be consistent. The paper therefore needs controls showing that UniVaR is
+especially sensitive to **value-related** differences.
 
 ## Does UniVaR actually contain value-related information?
 
-The main quantitative evaluation is **value identification**.
+The main quantitative task is **value identification**: given
+value-related QA text, can its UniVaR embedding identify which
+model-language combination produced it?
 
-Given an embedding of value-eliciting QA(s), can a simple classifier
-identify which model-language value identity generated them?
+UniVaR substantially outperforms generic word/sentence embeddings:
 
-The reasoning is:
+  Representation                k-NN accuracy   Linear Acc@10
+  --------------------------- --------------- ---------------
+  GloVe                                 2.27%          27.72%
+  BERT                                  1.78%          42.20%
+  LaBSE                                 4.03%          47.48%
+  **UniVaR (best setting)**        **20.37%**      **61.70%**
 
--   if different model-language pairs systematically express different
-    values;
--   and UniVaR captures those differences;
--   then their representations should be distinguishable.
+The useful comparison is not that 20% is intrinsically high. It is that
+**a representation specifically trained on value-eliciting behavior
+separates model-language sources far better than generic semantic
+embeddings do**.
 
-This is tested with both k-nearest neighbors and a linear probe on
-frozen embeddings.
+They also evaluate on value questions from four external sources ---
+PVQ-RR, WVS, GLOBE, and ValuePrism --- rather than simply reusing the
+generated training questions. The advantage persists even for GLOBE and
+ValuePrism, whose values overlap less with the sources used to generate
+the training data.
 
-### Main result
+## Could UniVaR just be recognizing the model?
 
-  Representation               k-NN accuracy   Linear Acc@10
-  -------------------------- --------------- ---------------
-  Random                               0.78%            7.8%
-  GloVe                                2.27%          27.72%
-  BERT                                 1.78%          42.20%
-  RoBERTa                              1.88%          41.17%
-  LaBSE                                4.03%          47.48%
-  **UniVaR ($\lambda=1$)**        **18.68%**      **57.98%**
-  **UniVaR ($\lambda=5$)**        **20.37%**      **61.70%**
+This is the most important sanity check.
 
-The absolute classification accuracy is not enormous, but the comparison
-to ordinary semantic embeddings is the more informative result. UniVaR
-is learning something substantially more diagnostic of the
-model-language source on value questions than generic sentence
-similarity alone.
+ChatGPT, Llama, etc. have recognizable response styles. If UniVaR
+identifies "ChatGPT-English" because of phrases, formatting, refusals,
+or other stylistic habits, then calling it a **value representation**
+would be misleading.
 
-### An interesting result: more context is not always better
+The authors therefore repeat source identification using **non-value
+questions from LIMA**, such as programming/informational questions.
+UniVaR's ability to distinguish the sources drops substantially.
 
-They train UniVaR with view sizes $\lambda\in\{1,5,20,80\}$.
+They separately test whether UniVaR can identify which language an
+English sentence was translated from. It is worse at this than the
+generic embedding baselines, suggesting that source-language translation
+artifacts are not the main thing it has learned.
 
-Performance peaks at **$\lambda=5$**, then declines:
+Neither test proves that the remaining signal is "pure values." But they
+make two simple alternative explanations --- generic model
+fingerprinting and translationese --- considerably less plausible.
 
--   $\lambda=5$: 20.37% k-NN accuracy
--   $\lambda=20$: 19.99%
--   $\lambda=80$: 18.01%
+> **Figure 4** is worth printing because the interpretation of almost
+> every later result depends on this sanity check.
 
-The authors suggest the very wide dynamic range of view sizes may make
-the model underfit the single-QA case. I would not interpret this as
-evidence that five questions are intrinsically sufficient to identify a
-model's values. It is better viewed as an optimization/generalization
-property of this particular training setup.
+## The most interesting result: models cluster strongly by language
 
-## But is the classifier just recognizing the model's style?
+When the authors project UniVaR embeddings into two dimensions,
+responses elicited in the **same language often cluster together even
+when they come from different LLMs**.
 
-This is probably the most important methodological sanity check in the
-paper.
+They highlight patterns such as:
 
-If UniVaR can identify "ChatGPT-English" because ChatGPT has a
-recognizable writing style, then high value-identification accuracy
-would not demonstrate that it learned values.
+-   Chinese / Japanese / Korean being relatively close;
+-   German / French / Spanish being relatively close;
+-   Indonesian / Malay / Arabic being relatively close.
 
-The authors therefore feed UniVaR **non-value-eliciting questions from
-LIMA**, such as programming questions. If the embedding is genuinely
-specialized for values, model identification should become much harder
-when the answer does not require a value judgment.
+The authors compare this with the **Inglehart-Welzel World Cultural
+Map**, derived from human World Values Survey responses, and find
+qualitatively similar groupings.
 
-That is what they observe: source-identification performance drops
-substantially for non-value questions. They also separately test
-translationese and report that UniVaR retains less translation-origin
-information than the baseline representations.
+This is particularly interesting because UniVaR receives the QA pairs
+**after they have been translated back into English**. Therefore, the
+clusters cannot simply be "these strings are all written in Chinese."
+Something about the answers elicited through Chinese survives
+translation and is shared across models.
 
-This does not prove the representation contains *only* values, but it
-rules out the simplest alternative explanation that UniVaR is merely a
-model/style fingerprint.
+> **Figure 5** is probably the best results/discussion figure to print.
 
-> **Figure to print: Figure 4.** I would include this. It supports the
-> interpretation of the entire method, not just an auxiliary result.
+### Aya and JAIS are interesting exceptions
 
-## What does the learned value space look like?
-
-The authors project UniVaR embeddings into two dimensions with UMAP.
-
-The striking pattern is that **responses in the same language tend to
-cluster together even when they come from different LLMs**.
-
-Examples the paper highlights:
-
--   Chinese / Japanese / Korean are relatively close;
--   German / French / Spanish are relatively close;
--   Indonesian / Malaysian / Arabic are relatively close;
--   English is relatively separated from several continental European
-    languages.
-
-The authors compare this organization with the **Inglehart-Welzel World
-Cultural Map** and argue that the geometry resembles known cultural
-groupings.
-
-### Why this result is interesting
-
-Remember that all QAs have already been translated back to English
-before UniVaR sees them. Therefore, a simple explanation like "Japanese
-strings cluster because they contain Japanese tokens" is unavailable.
-
-If the pipeline is working as intended, the remaining clustering must
-come from systematic differences in the **content of the answers**
-produced when the models were originally prompted in different
-languages.
-
-This is one of the paper's strongest high-level findings: **prompting
-language appears to be associated with a reproducible shift in the
-value-relevant behavior of LLMs, and that shift can dominate model
-identity.**
-
-### But "language = culture" is too strong
-
-The authors often use language as a proxy for culture. This is
-convenient experimentally, but the mapping is obviously imperfect:
-
--   English is used across many culturally different societies.
--   Arabic spans many countries and communities.
--   Multilingual speakers do not acquire a new culture simply by
-    switching languages.
--   Training-data composition and model alignment can create
-    language-conditioned behavior that does not faithfully represent
-    human speakers of that language.
-
-So I would phrase the result as:
-
-> **Model responses elicited in the same language show similar
-> value-related patterns, and the geometry of several language groups
-> resembles patterns in human cultural surveys.**
-
-That is well supported. "The model has learned the culture associated
-with each language" is a stronger causal/representational claim than the
-experiments establish.
-
-> **Figure to print: Figure 5.** Definitely worth printing in color. The
-> side-by-side comparison with the World Values Survey map is one of the
-> most discussion-worthy figures.
-
-## A particularly useful exception: Aya and JAIS
-
-The general trend is that **language matters strongly**: different
-languages within a model often occupy different regions of UniVaR space.
-
-However, the paper notes that **Aya and JAIS show unusually similar
-values across their languages**. Both were trained with substantial
-amounts of translated/multilingual data.
-
-This is interesting because it suggests that multilingual training
-strategy can change the relationship between language and expressed
-values. One plausible interpretation is that heavy use of
-parallel/translated data encourages a more language-invariant response
-distribution, including on value questions.
-
-The paper does not establish this causally, so I would treat it as a
-hypothesis rather than a conclusion. But it points to a useful future
-experiment: hold architecture and alignment constant while varying the
-amount/type of translated training data, then measure whether
-cross-language value distances shrink.
-
-## Can distance in UniVaR space be interpreted semantically?
-
-The authors inspect pairs of nearby and distant embeddings.
-
-One example compares vaccination responses:
-
--   **ChatGPT-English** emphasizes individual liberty/choice;
--   **ChatGPT-Chinese** emphasizes social responsibility.
-
-These embeddings are relatively far apart.
-
-Conversely, nearby **ChatGPT-French** and **Mixtral-German** responses
-to a question about tracking a criminal's IP address both emphasize
-rule-of-law considerations.
-
-This is helpful because it gives a concrete meaning to "distance" in the
-learned space: at least in selected examples, proximity corresponds to
-similar normative reasoning and distance corresponds to contrasting
-priorities.
-
-The important limitation is that UniVaR dimensions themselves are **not
-directly labeled or interpretable**. We can compare positions and
-distances, but unlike a 10-dimensional survey vector, we cannot say
-"dimension 37 = collectivism." High-dimensional learned representations
-trade some direct interpretability for expressive capacity.
-
-> **Figure to print: Figure 6** if you want one qualitative example to
-> make distances concrete. If space is limited, I would prioritize
-> Figures 2, 4, and 5 over it.
-
-## What I think the paper establishes
-
-1.  **Generic semantic embeddings are not enough for this task.** A
-    representation trained specifically across many value-eliciting
-    outputs carries much more information about model-language value
-    identity.
-2.  **Value-relevant behavior changes with prompting language.** Across
-    many models, language is a surprisingly strong organizer of the
-    learned value space.
-3.  **The effect is not trivially reducible to input/output language**,
-    because the representation is trained and evaluated on QAs
-    translated back to English.
-4.  **The representation is not trivially just a model-style
-    classifier**, because its source-identification ability drops
-    strongly on non-value questions.
-5.  **Cross-language geometry resembles some known human cultural
-    groupings**, although this should be interpreted as correspondence
-    rather than proof that LLMs faithfully contain those cultures.
-6.  **Training choices may affect cross-language value consistency.**
-    Aya and JAIS provide suggestive evidence that translation-heavy
-    multilingual training can make expressed values more similar across
-    languages.
-
-## Methodological considerations / things I would be careful about
-
-### 1. UniVaR does not discover values from nothing
-
-The paper motivates UniVaR as an alternative to low-dimensional
-predefined taxonomies, but the questions used to train it are seeded
-from **87 values taken from existing taxonomies**.
-
-The distinction is:
-
--   traditional survey approach: the taxonomy defines the *output
-    coordinates*;
--   UniVaR: the taxonomy helps define the *elicitation distribution*,
-    while the learned embedding is free to organize responses in a much
-    higher-dimensional way.
-
-So UniVaR is more flexible, but its notion of "value-relevant behavior"
-is still shaped by the questions researchers chose to ask.
-
-### 2. Value identity is operationalized as model × language
-
-The contrastive objective is trained to make views from the same
-model-language pair similar and different pairs dissimilar. This is a
-clever source of self-supervision, but it means that "value" is not
-independently labeled during representation learning.
-
-The authors' confounder experiments provide evidence that the learned
-signal is value-related. Still, the representation should be understood
-as **a learned model-language fingerprint specialized to value-eliciting
-behavior**, rather than a ground-truth measurement of an inaccessible
-latent variable.
-
-### 3. Translation is both a control and an intervention
-
-Back-translating everything to English is a strong control against
-superficial language clustering. At the same time, translation may:
-
--   normalize distinctions that matter culturally;
--   introduce systematic artifacts;
--   perform differently across languages.
-
-The paper checks translationese, which is reassuring, but no translation
-pipeline can guarantee perfect preservation of pragmatic or culturally
-specific meaning.
-
-### 4. UMAP is evidence for structure, not the structure itself
-
-The colorful 2D maps are compelling, but UMAP is a nonlinear
-dimensionality-reduction method. Local neighborhoods are generally more
-trustworthy than exact global distances or axis positions.
-
-The stronger evidence is therefore the combination of:
-
--   quantitative identification results;
--   confounder tests;
--   robustness across four evaluation corpora;
--   qualitative inspection of nearby/distant examples;
-
-rather than the 2D visualization alone.
-
-### 5. Similarity to human cultural maps needs careful interpretation
-
-A language cluster resembling a WVS cultural cluster is interesting
-validation, but there are multiple possible causal routes:
-
--   pretraining data written by speakers of those languages;
--   multilingual alignment/RLHF data;
--   translation data;
--   language-conditioned prompting effects;
--   model safety policies;
--   artifacts of the value questions or translation pipeline.
-
-UniVaR measures the resulting behavior; it does not identify which
-training stage caused it.
-
-## Questions for discussion
-
-1.  Is **model × language** the right unit for a "value identity," or
-    should we instead condition on country, dialect, persona, or
-    explicit cultural context?
-2.  How much of a model's value behavior comes from pretraining versus
-    instruction tuning / preference optimization?
-3.  Could we train UniVaR on the *same model before and after RLHF/DPO*
-    and use movement in embedding space to measure exactly what
-    alignment changed?
-4.  If a model gives culturally different answers in different
-    languages, is that desirable pluralism, undesirable inconsistency,
-    or context-sensitive behavior we actually want?
-5.  The paper removes language information through back-translation.
-    Could a multilingual representation model remove surface language
-    while preserving culturally meaningful pragmatics **without
-    translating**?
-6.  What should count as evidence that a learned representation is
-    genuinely a "value representation" rather than a specialized
-    behavioral fingerprint? What additional negative controls would we
-    want?
-7.  Can UniVaR eventually be made interpretable enough to say *which*
-    values changed, rather than only that two distributions are far
-    apart?
+For many models, switching languages moves their responses substantially
+in UniVaR space. Aya and JAIS show more cross-language similarity.
+
+Both have multilingual/translated-data-oriented training histories,
+which raises an interesting hypothesis: **training heavily across
+languages or on parallel/translated data may make a model's
+value-related behavior more language-invariant.**
+
+The paper does not experimentally isolate training data as the cause, so
+this should be treated as a hypothesis rather than a demonstrated
+mechanism.
+
+## Do these mappings actually mean what the authors say they mean?
+
+This is where I think the paper is most interesting to discuss.
+
+### What seems reasonably well supported
+
+There is a **stable behavioral signal in answers to value-related
+questions** that UniVaR can learn and that generalizes beyond the eight
+LLMs used to train the encoder.
+
+That signal is not easily explained by ordinary semantic similarity,
+generic model style, or obvious source-language artifacts.
+
+There is also convincing evidence that **prompting language
+systematically changes value-related LLM responses**. The fact that
+different models prompted in the same language often become closer is a
+real and interesting behavioral result.
+
+### What is not established
+
+**1. UniVaR does not show that it has recovered a model's internal "true
+values."**
+
+The authors never observe the latent value factors from their motivating
+formulation. UniVaR learns from behavior on questions researchers have
+designated as value-related. I think the safest description is therefore
+**a representation of value-elicited behavior**, rather than a direct
+measurement of values stored inside the network.
+
+**2. A language cluster is not automatically a cultural cluster.**
+
+Language is being used as a proxy for culture, but English, Arabic,
+Spanish, etc. each span many societies. A model may also behave
+differently across languages because of differences in pretraining data,
+instruction tuning, safety data, translation quality, or model
+competence.
+
+Therefore, "responses elicited in the same language show similar
+value-related patterns, and some patterns resemble human cultural survey
+groupings" is supported much better than "LLMs learn the culture
+associated with each language."
+
+**3. The geometry is learned from a particular definition of what counts
+as a value question.**
+
+The authors avoid forcing the final representation into a small
+predefined taxonomy. But the training questions are still seeded from 87
+values collected from existing human-value frameworks.
+
+So UniVaR is **less constrained by a taxonomy, not independent of one**.
+
+**4. The training objective itself does not know what a value is.**
+
+It knows that two sets of answers came from the same model-language
+source and should be close. Calling the learned common signal "values"
+depends on the design of the questions and on the controls showing that
+obvious non-value signals have been reduced.
+
+This is why I find the non-value and translationese experiments more
+important than the raw classification accuracy.
+
+**5. The 2D map is suggestive, not conclusive evidence.**
+
+UMAP is a visualization of a much higher-dimensional space. Exact
+distances and global geometry in the 2D figure should not be
+overinterpreted. The resemblance to the World Cultural Map is compelling
+visually, but it is not itself a statistical demonstration that UniVaR
+has rediscovered human cultural structure.
+
+## My takeaways / questions
+
+-   **The measurement idea is useful even if "value representation" is
+    too strong a name.** A reusable encoder for comparing value-related
+    behavior across models, languages, and checkpoints could be valuable
+    without claiming that the vector corresponds to a model's internal
+    value system.
+-   I find the **cross-language result more convincing than the culture
+    interpretation**. The experiments give good evidence that prompting
+    language changes normative behavior; they give weaker evidence about
+    *why*.
+-   The most interesting next experiment would be controlled training:
+    take the same base model and vary only multilingual data,
+    instruction tuning, or preference tuning. Then UniVaR could help ask
+    **which training stage causes the language-conditioned shifts**.
+-   Another strong test would be intervention: deliberately change a
+    known value preference during fine-tuning and ask whether UniVaR
+    moves in the expected direction while unrelated behaviors stay
+    fixed. The appendix contains an initial DPO value-transfer
+    experiment along these lines, but this could be made much more
+    controlled.
+-   If two models are nearby in UniVaR space, **what predictions should
+    that let us make about their behavior on unseen dilemmas?**
+    Predictive validity would make the geometry much more convincing
+    than visual similarity alone.
+-   Finally, is language-conditioned value variation desirable? A model
+    giving culturally/contextually appropriate answers in different
+    languages may be useful. But if the variation comes from uneven
+    alignment quality or stereotypes in training data, the same
+    phenomenon could be undesirable.
 
 ## Figures I would print
 
-If printing only **three** figures:
+If printing **three**:
 
-1.  **Figure 2 --- UniVaR overview:** best explanation of the method.
-2.  **Figure 4 --- value vs. non-value identification:** crucial sanity
-    check against model/style confounding.
-3.  **Figure 5 --- UniVaR map vs. human cultural map:** clearest
-    substantive result and likely the best discussion figure.
+1.  **Figure 2 --- UniVaR overview:** method.
+2.  **Figure 4 --- value vs. non-value identification:** most important
+    sanity check.
+3.  **Figure 5 --- UniVaR vs. World Cultural Map:** main result and best
+    discussion figure.
 
-If there is room for more:
-
--   **Figure 1** --- visually striking overview of the full learned map.
--   **Figure 3** --- useful for explaining exactly where the \~1M QA
-    pairs come from.
--   **Figure 6** --- concrete qualitative interpretation of near/far
-    embeddings.
--   **Figure 7** --- useful evidence that the broad clustering pattern
-    is robust across the four different evaluation corpora.
+If there is room for a fourth, add **Figure 3** for the QA-generation
+pipeline.
 
 ## Takeaway
 
-The paper's most useful idea is not simply that LLMs have different
-"values." It is that **value-related behavior can be treated as a
-representation-learning problem**.
+UniVaR is a **separate embedding model** trained on many value-eliciting
+responses from LLMs. Once trained, it can take value-related QA text
+from a new LLM and place it in the same learned space, allowing
+comparisons across models and languages.
 
-By repeatedly eliciting normative judgments, constructing multiple views
-of the same model-language behavior, and contrastively learning what
-remains stable across those views, UniVaR produces a representation that
-is much more sensitive to value-relevant differences than ordinary
-semantic embeddings.
+The strongest finding is that **the language used to prompt an LLM is
+systematically associated with the value-related behavior it
+expresses**, often strongly enough that different models prompted in the
+same language cluster together.
 
-The resulting space suggests a striking empirical pattern: **for many
-multilingual LLMs, the language used to interact with the model is
-strongly associated with the values it expresses, often strongly enough
-that responses group by language across different model families.** At
-the same time, models trained heavily on translated/multilingual data
-provide an interesting exception, suggesting that this relationship is
-partly a property of training rather than an unavoidable property of
-language itself.
-
-The main conceptual caution is that UniVaR does not directly recover a
-model's latent "true values." It learns a compact representation of
-**observable, value-elicited behavior** under a particular experimental
-pipeline. That is still useful: it gives us a scalable way to compare
-models, languages, and potentially alignment interventions without
-forcing every comparison into a small predefined set of survey
-dimensions.
-
-------------------------------------------------------------------------
-
-Paper: Cahyawijaya et al., *High-Dimension Human Value Representation in
-Large Language Models*, NAACL 2025.\
-https://aclanthology.org/2025.naacl-long.274/
+The paper makes a reasonable case that this is not simply language
+recognition, translation artifacts, or generic model style. What remains
+less certain is whether the resulting geometry should literally be
+interpreted as a map of "human values" or "cultures." I would view
+UniVaR first as a promising behavioral measurement tool; establishing
+exactly what its distances mean is the more difficult open problem.
