@@ -1,7 +1,8 @@
 # High-Dimension Human Value Representation in Large Language Models
 
-Cahyawijaya et al. (NAACL 2025)\
-Presented by Aarohi Srivastava
+_Samuel Cahyawijaya, Delong Chen, Yejin Bang, and others at NAACL 2025_
+
+_Presented by Aarohi Srivastava on 9/11/26_
 
 ## Motivation
 
