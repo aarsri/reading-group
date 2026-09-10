@@ -17,9 +17,9 @@ _Presented by Aarohi Srivastava on 9/11/26_
         summarized using a relatively small set of dimensions.
     -   This is interpretable, but we only learn about distinctions that
         the survey designers chose in advance.
--   The paper proposes **UniVaR (Universal Value Representation)**:
-    learn a much higher-dimensional embedding from how LLMs answer many
-    value-related questions.
+-   This paper proposes **UniVaR (Universal Value Representation)** to
+    learn a high-dimensional embedding based on LLM answers to
+    various value-related questions.
 -   The basic idea is similar to other embeddings:
     -   GloVe maps words to vectors so words used similarly end up
         nearby.
@@ -28,9 +28,8 @@ _Presented by Aarohi Srivastava on 9/11/26_
     -   **UniVaR is an embedding model trained so that sets of answers
         expressing similar LLM value behavior end up nearby.**
 -   UniVaR is therefore **not a new LLM and does not modify the LLM
-    being studied**. It is a separate, fixed encoder that is trained
-    once and can then be used to embed value-related responses from
-    other LLMs, including models it never saw during training.
+    being studied**. It is a separate, fixed embedding model that is trained
+    once and can then be used to obtain embeddings for value-related responses from LLMs, including models it never saw during training.
 
 ### What does a UniVaR representation actually look like?
 
