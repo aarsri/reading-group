@@ -165,7 +165,7 @@ fine-tune it for this specialized task.
 *pull matching views together in embedding space and push
 non-matching views apart.*
 
-> Include Figure 2
+<img src="figure2.png" width="900">
 
 ## Does UniVaR actually contain value-related information?
 
@@ -204,8 +204,6 @@ This is particularly interesting because UniVaR receives the QA pairs
 clusters cannot simply be "these strings are all written in Chinese."
 Something about the answers elicited through Chinese survives
 translation and is shared across models.
-
-> Figure 5
 
 ## Finding: Aya and JAIS are interesting exceptions.
 
